@@ -1,0 +1,65 @@
+/**
+ * 专题头图
+ */
+
+// view区临时占位
+.temp-topbanner {
+    min-height: 200px;
+    background: url(../images/temp_banner.png) center no-repeat;
+}
+
+// view区样式
+.view-topbanner {
+    img {
+        max-width: 100%;
+        max-height: 400px;
+    }
+}
+
+// 设置面板
+.dss-dialog-topbanner {
+    .upload {
+        $w: 32px;
+        $h: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-top: 10px;
+        height: 200px;
+        background-color: #f4f4f4;
+        cursor: pointer;
+        > img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .icon {
+            position: relative;
+            padding-top: $w + 10;
+            text-align: center;
+            color: #999;
+            &:before, &:after {
+                -s-position: absolute ($w / 2) _ _ 50%;
+                content: '';
+                background-color: #ccc;
+                transform: translate(-50%, -50%);
+            }
+            &:before {
+                size: $w $h;
+            }
+            &:after {
+                size: $h $w;
+            }
+        }
+
+        input[type=file] {
+            cursor: pointer;
+            -s-position: absolute 0 _ _ 0;
+            z-index: 1;
+            size: 100%;
+            opacity: 0;
+        }
+
+    }
+}

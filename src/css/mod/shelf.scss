@@ -1,0 +1,154 @@
+/**
+ * 货架样式
+ */
+
+/** 
+ * 创建 多列宽度
+ * $column  列数
+ * $gap     列与列之间的间距
+ */
+@function createWidth($column: 2, $gap: 10px) {
+    $columns: $column + 1;
+    $width: ($viewWidth - ($columns * $gap)) / $column;
+    @return $width;
+}
+
+@function createWidthPercent($column: 2, $gap: 2%) {
+    $columns: $column + 1;
+    $width: (100% - ($gap * $columns)) / $column;
+    @return $width;
+}
+
+/**
+ * 设置列样式
+ * $column     列数
+ * $gap        列之间的间距
+ * $width      总宽。默认使用百分比，可以传入具体数值，单位为px
+ */
+@mixin column($column: 2, $gap: 2%, $width: 100%) {
+    $columns: $column + 1;
+    $singleWidth: ($width - ($columns * $gap)) / $column;
+    width: $singleWidth;
+    margin-left: $gap;
+}
+
+
+// 两列和三列的公共样式
+%view-shelf {
+    padding: 10px 0;
+}
+
+.view-shelf_two,
+.view-shelf_three {
+    @extend %view-shelf;
+    font-size: 0;
+}
+
+%temp-shelf {
+    ul {
+        @include clearfix;
+    }
+    li {
+        margin-left: 10px;
+        float: left;
+        background: url('../images/temp_shelf.png') center no-repeat #fff;
+        background-size: 100%;
+    }
+}
+
+// 两列货架临时占位
+.temp-shelf_two {
+    @extend %temp-shelf;
+    li {
+        @include column(2, 2%, 100%);
+        height: 200px;
+    }
+}
+
+// 三列货架临时占位
+.temp-shelf_three {
+    @extend %temp-shelf;
+    li {
+        @include column(3, 2%, 100%);
+        height: 140px;
+    }
+}
+
+// view区样式
+%defaultBlock {
+    display: inline-block;
+    vertical-align: top;
+    background-color: #fff;
+    font-size: 14px;
+    .entranceMap {
+        position: relative;
+        padding-bottom: 100%;
+        background-color: #f6f6f6;
+        > * {
+            position: absolute;
+        }
+        img {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+    .rim {
+        padding: 5%;
+    }
+    .mainTitle {
+        @include ellipsis(2);
+        @include maxHeight(14px, 2, 1.5);
+    }
+    .sp {
+        font-size: 18px;
+        color: $color-theme;
+        &:before {
+            content: $rmb;
+            font-size: 12px;
+        }
+    }
+}
+
+.view-shelf_two {
+    .defaultBlock {
+        @extend %defaultBlock;
+        // 设置宽和左外边距
+        @include column(2, 2%, 100%);
+        .entranceMap {
+        }
+    }
+}
+
+.view-shelf_three {
+    .defaultBlock {
+        @extend %defaultBlock;
+        // 设置宽和左外边距
+        @include column(3, 2%, 100%);
+        .entranceMap {
+        }
+        .mainTitle {
+            @include ellipsis(2);
+            @include maxHeight(12px, 2, 1.5);
+        }
+    }
+}
+
+// 两列、三列货架 设置面板
+.dss-dialog-shelf_two,
+.dss-dialog-shelf_three {
+
+    // 编辑货架商品
+    .modify-shelf {
+        padding: 7px 0;
+        border: none;
+        margin-top: 20px;
+        width: 100%;
+        background-color: lighten($color: $color-theme, $amount: 30%);
+        color: $color-theme;
+        border-radius: 3px;
+    }
+    
+}

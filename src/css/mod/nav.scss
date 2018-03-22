@@ -1,0 +1,56 @@
+/**
+ * 一键生成导航
+ */
+
+// view区临时占位
+.temp-nav {
+    height: 100%;
+    text-align: center;
+    color: #999;
+    line-height: $dragHeight;
+    font-size: 16px;
+}
+
+// 为空的样式
+.empty-nav {
+    height: 100%;
+    text-align: center;
+    color: #999;
+    line-height: $dragHeight;
+    font-size: 16px;
+}
+
+// view区样式
+.view-nav {
+    padding: 2px 0;
+    min-height: auto !important;
+    ul {
+        overflow-x: auto;
+        height: 100%;
+        white-space: nowrap;
+        &:after, &:before {
+            content: '';
+            display: inline-block;
+            vertical-align: middle;
+            size: 5px 100%;
+        }
+    }
+    li {
+        padding: 0 14px;
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 14px;
+
+        span {
+            display: inline-block;
+            padding: 9px 5px;
+            border-bottom: 2px solid $color-theme;
+        }
+    }
+}
+
+// 设置面板
+// 第一版无此弹层
+.dss-dialog-nav {
+
+}

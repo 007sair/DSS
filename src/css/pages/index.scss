@@ -1,0 +1,323 @@
+
+html, body {
+    background-color: #f4f4f4;
+}
+
+.dss-menu {
+    -s-position: fixed 0 0 _ 0;
+    padding: 0 20px;
+    height: $menuHeight;
+    background-color: $color-theme;
+    color: #fff;
+    z-index: $zindexFixedTopbar;
+    .logo {
+        width: 250px;
+        height: 100%;
+        background: url('../images/logo.png') 0 center no-repeat;
+    }
+    .menu {
+        height: 100%;
+        > *, &:after {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        &:after {
+            content: '';
+            height: 100%;
+        }
+
+        .user {
+            margin-right: 10px;
+            padding: 3px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            span, svg {
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+
+        a[class*=btn-] {
+            margin: 0 5px;
+            padding: 8px;
+            color: #fff;
+            border-radius: 100%;
+            background-color: #f0348a;
+            &:hover {
+                background-color: darken($color: #f0348a, $amount: 10%);
+            }
+        }
+
+        svg {
+            font-size: 2em;
+        }
+    }
+}
+
+.dss-sidebar {
+    -s-position: fixed $menuHeight _ 0 0;
+    width: $sidebarWidth;
+    background-color: #fff;
+    border-right: 1px solid $color-border;
+    z-index: $zindexFixedTopbar;
+    > a {
+        display: block;
+        position: relative;
+        padding: 15px 10px;
+        text-align: center;
+        font-size: 14px;
+        color: #999;
+        text-decoration: none;
+        svg {
+            font-size: 1.75em;
+        }
+        &:after {
+            -s-position: absolute _ 10px 0 10px;
+            content: '';
+            display: block;
+            height: 1px;
+            background-color: $color-border;
+        }
+        &:hover, &.active {
+            color: #333;
+        }
+    }
+}
+
+.dss-crumbs {
+    @include clearfix;
+    -s-position: fixed $menuHeight 0 _ 0;
+    padding: 0 20px 0 ($sidebarWidth + 20px);
+    height: $crumbsHeight;
+    background-color: #fff;
+    border-bottom: 1px solid $color-border;
+    font-size: 14px;
+    z-index: $zindexFixedTopbar - 1;
+    .lt {
+        height: 100%;
+        > *, &:after {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        &:after {
+            content: '';
+            height: 100%;
+        }
+        .path {
+            margin-right: 10px;
+            > span {
+                &.cur {
+                    color: $color-gray;
+                }
+                &:after {
+                    content: '>';
+                    margin: 0 5px;
+                }
+                &:last-child {
+                    &::after {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        .tab {
+            @include clearfix;
+            margin-left: -20px;
+            li {
+                float: left;
+                padding: 0 25px;
+                font-size: 16px;
+                border-right: 2px solid $color-border;
+                &.active {
+                    color: $color-theme;
+                }
+                &:last-child {
+                    border-right: none;
+                }
+            }
+        }
+    }
+    
+    .btn-globalsetting {
+        padding: 4px 8px;
+        border: 1px solid $color-theme;
+        color: $color-theme;
+        border-radius: 5px;
+        outline: none;
+        &:hover {
+            $hover: darken($color: $color-theme, $amount: 20%);
+            color: $hover;
+            border-color: $hover;
+        }
+    }
+
+    .rt {
+        height: 100%;
+        &:before {
+            content: '';
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+        }
+        > button {
+            float: left;
+            position: relative;
+            margin: 0 -1px;
+            padding: 0 30px;
+            border: none;
+            font-size: 16px;
+            height: 100%;
+            &:after {
+                content: '';
+                -s-position: absolute 20% 0 20% _;
+                width: 1px;
+                background-color: $color-border;
+            }
+            &:last-child {
+                &:after {
+                    display: none;
+                }
+            }
+            &:hover {
+                background-color: $color-border;
+            }
+        }
+
+        .btn-create {
+            display: inline-block;
+            vertical-align: middle;
+            border: 1px solid $color-theme;
+            color: $color-theme;
+            padding: 4px 10px;
+            border-radius: 5px;
+            &:hover {
+                $darken: darken($color: $color-theme, $amount: 10%);
+                border-color: $darken;
+                color: $darken;
+            }
+        }
+    }
+}
+
+.dss-modules {
+    $top: $menuHeight + $crumbsHeight;
+    -s-position: fixed $top _ 0 $sidebarWidth;
+    padding: 20px;
+    width: $modulesWidth;
+    z-index: $zindexFixedTopbar;
+    background-color: #fff;
+    box-shadow: 2px 2px 2px #f2f2f2;
+
+    h2 {
+        margin-bottom: 15px;
+        font-size: 14px;
+        cursor: pointer;
+
+        &:before {
+            @include arrow(top, 6px, #999);
+            content: '';
+            margin-right: 5px;
+            display: inline-block;
+            vertical-align: 0.15em;
+            transition: transform 0.2s ease;
+        }
+
+        // 收起
+        &.collapse {
+            &:before {
+                transform: rotate(180deg)
+            }
+        }
+    }
+
+    // drag模块的样式见 drag.scss
+}
+
+.dss-main {
+    $top: $menuHeight + $crumbsHeight + 20;
+    $left: $sidebarWidth + 20;
+    padding: $top 20px 0 $left;
+}
+
+.dss-view {
+    $top: $menuHeight + $crumbsHeight + 20;
+    margin: $top auto 0 auto;
+    padding-bottom: 50px;
+    min-width: 1220px;
+    overflow-x: auto;
+
+    .view-box {
+        margin: 0 auto;
+        position: relative;
+        min-height: $dragHeight;
+        width: $viewWidth;
+        box-sizing: content-box;
+        background-color: #fff;
+        box-shadow: 0 0 5px 5px #eee;
+
+        &:before {
+            content: '拖动左侧模块至此区域';
+            -s-position: absolute 50% _ _ 50%;
+            font-size: 18px;
+            color: #999;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        // 有成功拖拽的内容时添加此class
+        &.view-box-draged {
+            &:before {
+                display: none;
+            }
+        }
+
+        // 这个div也包含了拖拽时的阴影元素 .gu-transit
+        > div {
+            margin-bottom: 10px;
+            &:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+        }
+
+        // 这个div从左侧拖拽生成的模块，每个模块都有一个对应的 view-xxx
+        .view {
+            position: relative;
+            min-height: $dragHeight;
+            background-color: #f9f9f9;
+            &.active {
+                z-index: 2;
+                &:before {
+                    content: '';
+                    -s-position: absolute 0 0 0 0;
+                    border: 3px solid $color-blue;
+
+                }
+            }
+        }
+    }
+}
+
+// 操作悬浮区
+.dss-action {
+    position: absolute;
+    box-shadow: 3px 3px 5px #ccc;
+    border-radius: 3px;
+    > ul {
+        background-color: #fff;
+        border-radius: 2px;
+        li {
+            padding: 6px;
+            color: #999;
+            &:hover, &.active {
+                color: #368bd9;
+            }
+        }
+    }
+    .icon-svg {
+        font-size: 16px;
+        vertical-align: top;
+    }
+}

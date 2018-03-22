@@ -1,0 +1,33 @@
+/**
+ * 分隔栏
+ */
+
+.view-hr {
+    
+}
+
+.temp-hr {
+    color: #7f8797;
+    height: $dragHeight;
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:before, &:after {
+        content: '';
+        display: inline-block;
+        size: 40px;
+        height: 1px;
+        background-color: currentColor;
+    }
+    i {
+        display: inline-block;
+        size: 5px;
+        border-radius: 100%;
+        background-color: currentColor;
+    }
+    span {
+        padding: 0 10px;
+    }
+}

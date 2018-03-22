@@ -1,0 +1,251 @@
+$borderColor: #eeeeee;
+$formborderColor: #e6e6e6;
+$pink: #fa5da3;
+$lightPink: #fff2f8;
+$btnblack: #666666;
+$imgbackground: #f4f4f4;
+$textcolor:#cccccc;
+$closecolor:#ababab;
+
+.mr15 {
+    margin-right: 15px;
+}
+
+.mr20 {
+    margin-right: 20px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+// 弹层遮罩
+.dss-mask {
+    -s-position: fixed 0 0 0 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+// 设置面板区
+.dss-dialog {
+    padding: 0 20px;
+    background: #ffffff;
+    position: absolute;
+    box-shadow: 3px 3px 5px #ccc;
+    width: 320px;
+
+    .tit {
+        position: relative;
+        height: 46px;
+        line-height: 46px;
+        border-bottom: 1px solid $borderColor;
+        font-size: 14px;
+        text-align: left;
+        .icon-close {
+            @include icon-close(22px, 2px, #ababab);
+            -s-position: absolute 50% 0 _ _;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        &.tit-center {
+            text-align: center;
+        }
+    }
+
+    .content {
+        overflow: hidden;
+    }
+
+    .btns {
+        @include center;
+        padding: 30px 0;
+        button {
+            margin: 0 15px;
+            padding: 0 20px;
+            border: 1px solid $color-border;
+            border-radius: 2em;
+            height: 36px;
+            line-height: 36px;
+            min-width: 120px;
+            font-size: 14px;
+            color: #999;
+            outline: none;
+
+            &:disabled {
+                background-color: #ddd !important;
+            }
+
+            &.btn-primary {
+                background-color: $color-theme;
+                color: #fff;
+            }
+        }
+    }
+}
+
+// 表单
+.dss-form-item {
+    $singleHeight: 40px; // 单行高度
+    @include clearfix;
+
+    margin-top: 20px;
+    min-height: $singleHeight;
+
+    // 左侧文字
+    .form-label {
+        float: left;
+        line-height: $singleHeight;
+        padding-right: 10px;
+        text-align: right;
+
+        // 必选
+        &.required {
+            &:before {
+                content: '*';
+                margin-right: 3px;
+                color: $color-theme;
+            }
+        }
+
+        // 左侧文字的宽度，循环的字个数
+        $sizes: 2, 3, 4, 5, 6;
+        @each $size in $sizes {
+            &.form-label-#{$size} {
+                width: $size * 1em + 2.5em;
+            }
+        }
+    }
+
+    .form-box {
+        overflow: hidden;
+        > input[type=text] {
+            width: 100%;
+        }
+    }
+
+    input[type=text], textarea, select {
+        @include placeholder(#999);
+        &:focus {
+            border-color: #66afe9;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+        }
+    }
+
+    select {
+        padding: 2px 8px;
+        width: 100%;
+        height: $singleHeight;
+        border: 1px solid $formborderColor;
+        background-color: transparent;
+        border-radius: none;
+    }
+
+    input[type=text] {
+        padding: 5px 8px;
+        height: $singleHeight;
+        border: 1px solid $formborderColor;
+    }
+
+    textarea {
+        padding: 5px 8px;
+        border: 1px solid $formborderColor;
+        outline: none;
+        width: 100%;
+        color: #999;
+        min-width: $singleHeight;
+        resize: none;
+        &:focus {
+            color: #333;
+        }
+    }
+}
+
+// 色板
+.color-picker {
+    input {
+        width: 7em;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+    .sp-replacer {
+        vertical-align: top;
+        padding: 9px;
+    }
+}
+
+// 全局设置
+.dss-globalset {
+
+    position: relative;
+    z-index: $zindexModal;
+
+    .dss-dialog {
+        -s-position: fixed 50% _ _ 50%;
+        width: 400px;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        box-shadow: none;
+    }
+
+    .upload-share {
+        .img {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            vertical-align: bottom;
+            size: 120px;
+            border: 1px solid $color-border;
+            > img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+        .btn {
+            line-height: 1;
+            display: inline-block;
+            vertical-align: bottom;
+            color: #999;
+
+            > button {
+                position: relative;
+                margin-bottom: 7px;
+                display: block;
+                size: 80px 28px;
+                line-height: 28px;
+                text-align: center;
+                border: 1px solid $color-theme;
+                border-radius: 4px;
+                color: $color-theme;
+                cursor: pointer;
+
+                > input[type=file] {
+                    cursor: pointer;
+                    -s-position: absolute 0 _ _ 0;
+                    z-index: 1;
+                    size: 100%;
+                    opacity: 0;
+                }
+            }
+        }
+    }
+}
+
+// 编辑货架商品
+.dss-modify-shelf {
+    position: relative;
+    z-index: $zindexModal;
+}
+
+.dss-createpage {
+    position: relative;
+    z-index: $zindexModal;
+    .dss-dialog {
+        -s-position: fixed 50% _ _ 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: none;
+    }
+}

@@ -1,0 +1,413 @@
+/**
+ * 页面主样式
+ */
+
+/*** lyy ***/
+
+
+.dss-tab {
+    min-width: 1120px;
+}
+
+.state-open {
+    width: 100px;
+    position: absolute;
+    background: #fff;
+    top: 44px;
+    left: 8px;
+    z-index: 12;
+    box-shadow: 0px 0px 20px $light_gray;
+    // display: none;
+    .arrow-up {
+        position: absolute;
+        @include arrow(top, 8px, #fff!important);
+        left: 46px;
+        top: -7px;
+    }
+}
+
+.state-list {
+    >span {
+        display: inline-block;
+        height: 35px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #f2f2f2;
+        line-height: 35px;
+        color: $middle_gray;
+        &.cur {
+            color: $pink;
+            background: #fafafa;
+        }
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+.dss-tab {
+    ul {
+        background: #fff;
+        display: flex;
+        font-size: $font_size14;
+        &.title {
+            color: $light_gray;
+        }
+    }
+    li {
+        font-size: 14px;
+        border-right: 1px solid #f2f2f2;
+        border-bottom: 1px solid #f2f2f2;
+        min-height: 51px;
+        padding: 5px 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.3;
+        &:nth-child(1) {
+            width: 11%;
+        }
+        &:nth-child(2) {
+            width: 23%;
+        }
+        &:nth-child(3) {
+            width: 17%;
+        }
+        &:nth-child(4) {
+            width: 11%;
+        }
+        &:nth-child(5) {
+            width: 14%;
+        }
+        &:nth-child(6) {
+            width: 24%;
+        }
+        &.state {
+            position: relative;
+            .arrow-down {
+                display: inline-block;
+                margin-left: 5px;
+                vertical-align: middle;
+                @include arrow(bottom, 6px, #aaa);
+                cursor: pointer;
+            }
+            .arrow-top {
+                display: inline-block;
+                margin-left: 5px;
+                vertical-align: middle;
+                @include arrow(top, 6px, #aaa);
+                cursor: pointer;
+            }
+            >svg {
+                font-size: 1.3em;
+                margin-left: 12px;
+                cursor: pointer;
+            }
+            .arrow-up {
+                display: inline-block;
+                position: absolute;
+                @include arrow(top, 8px, #616161);
+            }
+            .state-content {
+                position: absolute;
+                background: #616161;
+                font-size: 12px;
+                height: 90px;
+                width: 250px;
+                z-index: 12;
+                color: #fff;
+                top: 44px;
+                left: 68px;
+                padding: 10px 15px;
+                line-height: 22px;
+                display: none;
+                .arrow-up {
+                    @include arrow(top, 8px, #616161);
+                    bottom: 100%;
+                }
+            }
+        }
+        a {
+            padding: 0 4px;
+            color: $gray;
+            &:hover {
+                color: $pink;
+                text-decoration: none;
+            }
+            &:active {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+/*编辑货架商品*/
+.layer-edit {
+    -s-position: fixed 50% _ _ 50%;
+    width: 1200px;
+    background: #f2f2f2;
+    z-index: 1200;
+    padding-bottom: 40px;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    .title {
+        font-size: 18px;
+        line-height: 36px;
+        background: #fff;
+        padding: 8px 30px;
+        >a {
+            float: right;
+            font-size: 16px;
+            color: $gray;
+            padding-left: 27px;
+            font-weight: bold;
+            &.cancel {
+                border-right: 1px solid #dddddd;
+                padding-right: 27px;
+            }
+        }
+    }
+}
+
+.layer-filter {
+    padding: 10px 30px;
+    font-size: 14px;
+
+    &:after {
+        display: inline-block;
+        vertical-align: middle;
+        content: '';
+    }
+
+    > * {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .input-wrap {
+        @include clearfix;
+        margin-left: 10px;
+        height: 32px;
+        font-size: 14px;
+        .type-select {
+            position: relative;
+            float: left;
+            height: 100%;
+            min-width: 5.5em;
+            background: #fff;
+            padding: 5px 8px;
+            border: 1px solid #e6e6e6;
+            border-right: none;
+            cursor: pointer;
+            &:after {
+                @include arrow(bottom, 6px, #999);
+                -s-position: absolute 12px 7px  _ _;
+                content: '';
+            }
+            .drop {
+                display: none;
+                -s-position: absolute 44px _ _ -12px;
+                background: #fff;
+                width: 100px;
+                z-index: 12;
+                box-shadow: 0px 0px 20px $light_gray; // display: none;
+                > li {
+                    display: inline-block;
+                    vertical-align: top;
+                    size: 100% 35px;
+                    line-height: 35px;
+                    border-bottom: 1px solid #f2f2f2;
+                    text-align: center;
+                    color: $middle_gray;
+                    &:hover, &.cur {
+                        color: $pink;
+                        background: #fafafa;
+                    }
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+                &:before {
+                    content: '';
+                    @include arrow(top, 8px, #fff !important);
+                    -s-position: absolute _ _ _ 50%;
+                    transform: translate(-50%, -100%);
+                }
+            }
+
+            &.type-select-expand {
+                .drop {
+                    display: block;
+                }
+            }
+        }
+        input {
+            float: left;
+            padding: 0 8px;
+            size: 240px 100%;
+            font-size: 14px;
+            border: none;
+            border: 1px solid #e6e6e6;
+            &.ipt-error {
+                border: 1px solid #fa4b9b;
+            }
+        }
+    }
+    button {
+        color: #fff;
+        background: $pink;
+        height: 32px;
+        padding: 0 25px;
+        border: none;
+        margin: 0 10px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    >a {
+        color: $gray;
+        text-decoration: underline;
+    }
+    .btn-batchadd {
+        position: relative;
+        > input[type=file] {
+            cursor: pointer;
+            -s-position: absolute 0 _ _ 0;
+            z-index: 1;
+            size: 100%;
+            opacity: 0;
+        }
+    }
+}
+
+.layer-tabel {
+    width: 1140px;
+    margin: 0 auto;
+    font-size: 14px;
+    color: $middle_gray;
+    .layer-title {
+        background: #fff !important;
+        height: 48px;
+    }
+    ul {
+        background: #fbfff8;
+        display: flex;
+        &:nth-child(even) {
+            background: #f7f7ff;
+        }
+    }
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        padding: 5px 10px;
+        word-break: break-all;
+
+        &:nth-child(1) {
+            width: 10%;
+        }
+
+        &:nth-child(2) {
+            width: 12%;
+        }
+
+        &:nth-child(3) {
+            width: 26%;
+        }
+
+        &:nth-child(4) {
+            width: 10%;
+        }
+
+        &:nth-child(5) {
+            width: 14%;
+        }
+
+        &:nth-child(6) {
+            width: 14%;
+        }
+
+        &:nth-child(7) {
+            width: 14%;
+        }
+
+        // 标题列
+        &.cell-title {
+            > p {
+                $fz: 14px;
+                $line: 2;
+                $lh: 1.5;
+                @include ellipsis(2);
+                max-height: $fz * $line * $lh;
+            }
+            // 输入框
+            > input {
+                display: none;
+                padding: 5px;
+                border: 1px solid $color-border;
+                width: 220px;
+            }
+
+            // 商品标题 编辑图标
+            .edit-icon {
+                font-size: 20px;
+                margin-left: 8px;
+                color: $middle_gray;
+                &.active {
+                    color: $pink;
+                }
+                &:hover {
+                    color: $pink;
+                }
+            }
+
+            // 编辑状态
+            &.status-edit {
+                > p, .edit-icon {
+                    display: none;
+                }
+                > input {
+                    display: block;
+                }
+            }
+        }
+
+        // 操作区
+        &.cell-actions {
+            > a {
+                font-size: 20px;
+                padding: 0 8px;
+                color: $light_gray;
+                &:hover {
+                    color: $pink;
+                }
+            }
+        }
+
+        // 商品图片
+        .item-img {
+            size: 60px;
+        }
+
+        
+    }
+}
+
+.layer-content {
+    position: relative;
+    height: 320px;
+    overflow-y: scroll;
+
+    // 状态 - 是否为空
+    &.status-isEmpty {
+        &:after {
+            content: '暂无商品，请添加';
+            -s-position: absolute 50px _ _ 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #999;
+        }
+    }
+}

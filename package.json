@@ -1,0 +1,46 @@
+{
+  "name": "dss",
+  "version": "1.0.0",
+  "description": "drag special system",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:007sair/hero.git"
+  },
+  "keywords": [
+    "drag",
+    "special",
+    "system"
+  ],
+  "author": "longchan",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^7.2.3",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.18.13",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.3",
+    "gulp-postcss": "^7.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-util": "^3.0.8",
+    "html-webpack-include-assets-plugin": "^1.0.4",
+    "html-webpack-plugin": "^2.28.0",
+    "postcss-short": "^4.1.0",
+    "webpack": "^3.9.1",
+    "yargs": "^10.0.3"
+  },
+  "dependencies": {
+    "dragula": "^3.7.2",
+    "jquery": "^2.2.4",
+    "knockout": "^3.5.0-beta",
+    "spectrum-colorpicker": "^1.8.0",
+    "store": "^2.0.12",
+    "sweetalert": "^2.1.0"
+  }
+}

@@ -1,0 +1,100 @@
+
+// 模块放置区 混合器
+@mixin texture($color: #3089dc, $size: 6px) {
+    background-color: lighten($color, 45%);
+    background-image: radial-gradient($color 32%, transparent 15%),
+    radial-gradient($color 32%, transparent 15%);
+    background-size:$size $size;
+	background-position: 0 0,$size $size;
+	
+	.title {
+        -s-position: absolute 50% _ _ 50%;
+        padding: 5px 15px;
+        transform: translate(-50%, -50%);
+        background-color: lighten($color, 45%);
+        line-height: 1;
+        color: $color;
+        border-radius: 3px;
+        white-space: nowrap;
+    }
+}
+
+
+// 拖拽镜像样式
+%mirror {
+    padding: 10px 0 12px;
+    width: 80px;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 5px;
+    line-height: 1.4;
+
+    > i {
+        margin: 0 auto 5px;
+        display: block;
+        size: 40px;
+    }
+}
+
+// 左侧拖拽模块
+.drag-module {
+    margin-bottom: 25px;
+    > div {
+        @extend %mirror;
+
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 45px;
+        cursor: move;
+
+        &:nth-child(even) {
+            margin-right: 0;
+        }
+
+        &:hover {
+            background-color: #edf6ff;
+        }
+    }
+}
+
+// 拖拽时的镜像
+.gu-mirror {
+    @extend %mirror;
+    @include opacity(0.8, true);
+
+    position: fixed !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+
+    text-align: center;
+    background-color: $dragBgColor;
+}
+
+.gu-hide {
+    display: none !important
+}
+
+// body
+.gu-unselectable {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important
+}
+
+// 拖拽到view区的占位元素
+.gu-transit {
+    position: relative;
+    min-height: $dragHeight;
+    line-height: $dragHeight;
+    font-size: 14px;
+    text-align: center;
+    color: #fff;
+    z-index: 2;
+
+    @include texture($color: $color-blue);
+
+    &.error {
+        @include texture($color: #f00)
+    }
+}

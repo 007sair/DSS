@@ -1,0 +1,39 @@
+/**
+ * 变量
+ */
+
+// 人民币符号 ¥
+$rmb: '\00A5';
+
+$color-theme: #fa4b9b;
+$color-border: #e6e6e6;
+$color-gray: #999;
+$color-blue: #3089dc;
+$color-block: #f9f9f9;
+
+// fixed bar
+$menuHeight: 80px; // 顶部菜单高度
+$sidebarWidth: 60px; // 左侧边栏宽度
+$crumbsHeight: 50px; // 面包屑高度
+$modulesWidth: 250px; // 左侧模块区宽度
+$viewWidth: 375px; // view区宽度
+$settingPanelWidth: 360px; // 设置面板区宽度
+
+$dragHeight: 60px;
+$dragBgColor: rgba(153, 153, 153, 0.2);
+
+
+/*** z-index ***/
+$zindexDropdown:        1000 !default;
+$zindexFixedTopbar:     1010 !default;
+$zindexTooltip:         1020 !default;
+$zindexAlert:           1030 !default;
+$zindexModal:           1100 !default;
+
+
+/*** lyy ***/
+$font_size14 :14px;
+$pink: #fa4b9b;
+$gray: #333;
+$middle_gray: #666;
+$light_gray: #999;
