@@ -73,17 +73,14 @@ class TopBanner {
         let idx = tool.startLoading()
         setTimeout(() => {
             self.destroy()
-            global_data.isDomUpdate = true
             layer.msg('保存成功', { icon: 1, time: 1500 });
             layer.close(idx)
-            global_data.store.data[id] = ko.mapping.toJS(this.data);
-
-            // 触发 store.set() 保存数据到本地
-            // 在这之前必须先处理好global_data.store的数据，否则无法保存
-            global_data.isDomUpdate = true
+            global_data.store.data[id].src = this.src()
 
             // 渲染view预览区
             self.renderViewHtml()
+
+            global_data.isDomUpdate = true
             
         }, 500);
     }
@@ -111,7 +108,7 @@ class TopBanner {
     renderViewHtml($el = dom.$activeView) {
         // 需转换成原始对象
         let html = `
-            <img src="${ ko.toJS(this.src) }" />
+            <img src="${ this.src() }" />
         `
         $el.html(html)
     }

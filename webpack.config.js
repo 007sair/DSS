@@ -60,7 +60,8 @@ let config = {
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
             ko: '_lib/ko',
-            swal: 'sweetalert'
+            swal: 'sweetalert',
+            layer: path.resolve(__dirname, "src/js/lib/layer"),
         }),
         new HtmlWebpackIncludeAssetsPlugin({
             assets: ['js/vendor.min.js'],

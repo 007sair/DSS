@@ -1,11 +1,4 @@
-//ali iconfont svg js
-document.body.appendChild(function () {
-    let script = document.createElement('script');
-    script.src = '//at.alicdn.com/t/font_584623_db4d94zzwpgsc3di.js';
-    return script;
-}());
-
-import './lib/layer'
+import '_lib/iconfont'
 import tool from '_instance/tool'
 import dom, { el_module, el_view } from '_instance/dom';
 import Pagination from '_module/components/pagination'
@@ -100,7 +93,7 @@ class List {
     }
 }
 
-ko.applyBindings(new List, document.getElementById('.js-home-list'))
+ko.applyBindings(new List, document.getElementById('js-home-list'))
 
 // 分页器
 let pagination = new Pagination({}, (cb) => {

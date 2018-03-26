@@ -12,6 +12,7 @@ module.exports = {
             'jquery', 
             'spectrum-colorpicker',
             'sweetalert',
+            path.resolve(__dirname, "src/js/lib/layer"),
             path.resolve(__dirname, "src/js/lib/ko"),
         ],
     },
@@ -21,6 +22,14 @@ module.exports = {
         library: '[name]_library'
     },
     plugins: [
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery',
+            ko: '_lib/ko',
+            swal: 'sweetalert',
+            layer: path.resolve(__dirname, "src/js/lib/layer"),
+        }),
         new uglifyJsPlugin({
             compress: {
                 warnings: false
