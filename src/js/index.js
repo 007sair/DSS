@@ -8,6 +8,7 @@ document.body.appendChild(function () {
 
 import 'spectrum-colorpicker' // http://bgrins.github.io/spectrum/
 import './lib/layer'
-import './lib/knockout.mapping'
+
 import './instance/watch'
 import './instance/event'
+

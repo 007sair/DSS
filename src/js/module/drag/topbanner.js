@@ -20,10 +20,7 @@ class TopBanner {
         // 悬浮操作区
         this.actions = ['setting', 'delete']
 
-        // 当前模块存放的所有数据
-        this.data = ko.mapping.fromJS({
-            src: ''
-        });
+        this.src = ko.observable('')
     }
 
     html() {
@@ -36,8 +33,8 @@ class TopBanner {
                     <span class="c-theme">*</span> 建议图片宽度<1000，高150-1500，支持jpg、png格式
                 </p>
                 <div class="upload">
-                    <span class="icon" data-bind="visible: !data.src()">添加图片</span>
-                    <img data-bind="visible: data.src(), attr: { src: data.src }">
+                    <span class="icon" data-bind="visible: !src()">添加图片</span>
+                    <img data-bind="visible: src(), attr: { src:src }">
                     <input data-bind="event: { change: function() { uploadImage($element.files[0]) } }" type="file" name="files[]" multiple>
                 </div>
             </div>
@@ -93,7 +90,7 @@ class TopBanner {
 
     uploadImage(file) {
         tool.requestUpload(file, (res) => {
-            this.data.src(res.url)
+            this.src(res.url)
         })
     }
 
@@ -113,9 +110,8 @@ class TopBanner {
     // 调用时机：点击设置面板区的"保存"按钮
     renderViewHtml($el = dom.$activeView) {
         // 需转换成原始对象
-        let obj = ko.mapping.toJS(this.data)
         let html = `
-            <img src="${obj.src}" />
+            <img src="${ ko.toJS(this.src) }" />
         `
         $el.html(html)
     }

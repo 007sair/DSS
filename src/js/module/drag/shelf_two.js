@@ -21,12 +21,12 @@ class ShelfTwo {
         this.actions = ['setting','up', 'dn', 'delete']
 
         // 当前模块存放的所有数据
-        this.data = ko.mapping.fromJS({
+        this.data = {
             id: '', // 当前模块的id
             isChildSaved: false, // 子模块是否保存
             shelf_title: '',
             items: [],
-        })
+        }
 
         // view区显示的最大个数
         this.showMax = 2;
@@ -59,6 +59,8 @@ class ShelfTwo {
         let self = this
         let id = dom.$activeView.attr('id')
         let offset = dom.getOffset(dom.$action)
+
+        this.data = ko.mapping.toJS(this.data)
 
         this.$container = $(`
             <div class="dss-dialog dss-dialog-${this.type}">${this.html()}</div>

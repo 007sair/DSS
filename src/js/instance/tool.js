@@ -26,7 +26,6 @@ $.fn.moveTo = function (direction) {
     }
 }
 
-
 export default {
 
     // 创建一个16位的唯一标识
@@ -115,5 +114,11 @@ export default {
             time: 1e8
         });
     },
+
+    // 数组数据对调
+    swapItems(arr, index1, index2) {
+        arr[index1] = arr.splice(index2, 1, arr[index1])[0]
+        return arr
+    }
     
 }

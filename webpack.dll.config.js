@@ -10,10 +10,9 @@ module.exports = {
     entry: {
         vendor: [
             'jquery', 
-            'knockout',
-            'sugar', 
-            'jquerymy', 
-            'spectrum-colorpicker'
+            'spectrum-colorpicker',
+            'sweetalert',
+            path.resolve(__dirname, "src/js/lib/ko"),
         ],
     },
     output: {
@@ -22,12 +21,6 @@ module.exports = {
         library: '[name]_library'
     },
     plugins: [
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery',
-            ko: 'knockout',
-        }),
         new uglifyJsPlugin({
             compress: {
                 warnings: false

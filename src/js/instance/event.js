@@ -276,8 +276,3 @@ $(document.body).on('click', '#js-save-page', function () {
     dom.eachViews()
     console.log(global_data.wholeData.data);
 })
-
-$(document.body).on('click', '#js-createpage', function () {
-    let create_page = dom.getModule('create_page')
-    create_page.create()
-})

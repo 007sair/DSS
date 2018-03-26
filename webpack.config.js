@@ -51,11 +51,16 @@ let config = {
         ]
     },
     plugins: [
+        new CommonsChunkPlugin({
+            name: 'common',
+            minChunks: 2
+        }),
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
-            ko: 'knockout',
+            ko: '_lib/ko',
+            swal: 'sweetalert'
         }),
         new HtmlWebpackIncludeAssetsPlugin({
             assets: ['js/vendor.min.js'],
@@ -66,12 +71,12 @@ let config = {
         new HtmlWebpackPlugin({ //页面1 项目开发请填写注释
             filename: 'index.html',
             template: 'src/index.html',
-            chunks: ['index']
+            chunks: ['index', 'common']
         }),
         new HtmlWebpackPlugin({ //页面1 项目开发请填写注释
             filename: 'home.html',
             template: 'src/home.html',
-            chunks: ['index']
+            chunks: ['home', 'common']
         }),
         new webpack.DllReferencePlugin({
             context: __dirname,

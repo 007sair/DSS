@@ -21,10 +21,10 @@ class Hr {
         this.actions = ['setting', 'up', 'dn', 'delete']
 
         // 当前模块存放的所有数据
-        this.data = ko.mapping.fromJS({
+        this.data = {
             text: '分隔栏',
             color: ''
-        })
+        }
 
     }
 
@@ -60,6 +60,8 @@ class Hr {
         let self = this
         let offset = dom.getOffset(dom.$action)
         let id = dom.$activeView.attr('id')
+
+        this.data = ko.mapping.toJS(this.data)
         
         this.$container = $(`
             <div class="dss-dialog dss-dialog-${this.type}">${this.html()}</div>
@@ -70,8 +72,6 @@ class Hr {
         
         // 数据发生变更，需再次mapping
         this.data = ko.mapping.fromJS(Object.assign({}, this.data, global_data.store.data[id]))
-
-        console.log(this.data);
 
         // 设置色板
         this.setColor()

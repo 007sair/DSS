@@ -1,64 +1,91 @@
 /**
  * 编辑货架商品
  */
+import tool from '_instance/tool'
 
 /**
- * 全局设置
+ * 同时绑定enter与blur事件，回车和失焦使用一个函数
+ * @绑定
+ *   方法1：data-bind="enterBlur:toggleTitleInput.bind($parent)"
+ *   方法2：data-bind="enterBlur:function(){ $parent.toggleTitleInput(event) }"
+ * @调用 
+ *   toggleTitleInput(event) {
+ *     console.log(this)    // this作用域为viewModel
+ *     console.log(event)   // event为事件对象
+ *   }
  */
-
-import global_data from '_instance/data'
-import tool from '_instance/tool'
+ko.bindingHandlers.enterBlur = {
+    init: function (element, valueAccessor, allBindings, viewModel) {
+        var callback = valueAccessor();
+        $(element).on('keypress blur', function (event) {
+            if (event.type == 'blur') {
+                callback.call(viewModel, event);
+                return false
+            }
+            if (event.type == 'keypress') {
+                let keyCode = (event.which ? event.which : event.keyCode);
+                if (keyCode === 13) {
+                    $(this).blur()
+                    return false;
+                }
+            }
+            return true
+        })
+    }
+};
 
 class ModifyShelf {
 
     constructor() {
 
-        // 当前模块的容器
         this.$container = null
 
         this.title = '编辑货架商品'
 
-        // 当前模块存放的数据
-        this.data = {
-            selected: 'sku',
-            items: []
-        }
+        this.editing = ko.observable(false)
 
-        // 所有添加的商品数据，临时存储
-        // 数据都会在点确定后被保存到 this.data.items
-        this.tmp_items = {}
+        this.isSelectShow = ko.observable(false)
+        this.types = ko.observableArray([
+            { type: 'sku', text: 'SKU' },
+            { type: 'list', text: '特卖id' },
+            { type: 'key', text: '关键词' }
+        ])
 
-        // 每条商品的序列号
-        this.item_index = 0
+        this.indexCount = ko.observable(0)
+
+        // 被选中的类型对象
+        this.selectedType = ko.observable(this.types()[0])
+
+        this.value = ko.observable('')
+
+        this.items = []
+
     }
 
-    // 当前模块的所有html
-    html() {
+    getHtml() {
         return `
             <div class="dss-mask"></div>
             <div class="layer-edit">
                 <div class="title">
-                    ${this.title}
-                    <a id="js-save" href="javascript:;">确定</a>
-                    <a class="cancel js-close" href="javascript:;">取消</a>
+                    <span data-bind="text:title"></span>
+                    <a data-bind="click:save" href="javascript:;">确定</a>
+                    <a data-bind="click:close" class="cancel" href="javascript:;">取消</a>
                 </div>
                 <div class="layer-filter">
                     <label for="">类型</label>
                     <div class="input-wrap">
-                        <div class="type-select js-dropdown">
-                            <span class="selected">SKU</span>
-                            <ul class="drop">
-                                <li data-type="sku">SKU</li>
-                                <li data-type="list">特卖ID</li>
-                                <li data-type="key">关键词</li>
+                        <div class="type-select" data-bind="click:toggleType">
+                            <span class="selected" data-bind="text:selectedType().text"></span>
+                            <ul class="drop" data-bind="foreach:types,style:{'display':isSelectShow() ? '' : 'none'}">
+                                <li data-bind="text:$data.text,click:$parent.choseType.bind($parent),css:{'cur':$parent.selectedType().text == $data.text}"></li>
                             </ul>
                         </div>
-                        <input class="js-ipt-text" placeholder="请输入SKU" type="text">
+                        <input data-bind="value:value,valueUpdate:'afterkeydown'" placeholder="请输入SKU" type="text">
                     </div>
-                    <button class="js-add">添加</button>
-                    <button class="btn-batchadd js-batch-add">
+                    <button data-bind="click:addItem,disable:!value()">添加</button>
+                    <button class="btn-batchadd" data-bind="click:addItems">
                         批量添加
-                        <input type="file" name="files[]" multiple>
+                        <input data-bind="event: { change: function() { uploadFile($element.files[0]) } }" type="file" name="files[]" multiple>
                     </button>
                     <a href="javascript:;">下载导入表格</a>
                 </div>
@@ -72,278 +99,180 @@ class ModifyShelf {
                         <li>库存</li>
                         <li>操作</li>
                     </ul>
-                    <div class="layer-content js-listbox status-isEmpty"></div>
+                    <div class="layer-content" data-bind="foreach:items,css:{'status-isEmpty':!items().length}">
+                        <ul class="item">
+                            <li data-bind="text:$data.index"></li>
+                            <li data-bind="text:$data.sku"></li>
+                            <li data-bind="css: { 'status-edit': $data.isEdit() }" class="cell-title">
+                                <p data-bind="text:$data.title" data-bind="visible:$parent.editing()"></p>
+                                <input data-bind="value:$data.title,valueUpdate:'change',enterBlur:$parent.toggleTitleInput.bind($parent)" placeholder="按回车键保存" class="ipt-title" type="text">
+                                <a data-bind="click:function(){ $parent.toggleTitleInput.call($parent, event) }" href="javascript:;" class="edit-icon">
+                                    <svg class="icon-svg" aria-hidden="true">
+                                        <use xlink:href="#icon-bianji1"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                            <li data-bind="text:$data.sp"></li>
+                            <li><img data-bind="attr:{src:$data.img}" class="item-img" alt=""></li>
+                            <li data-bind="text:$data.st"></li>
+                            <li class="cell-actions">
+                                <a data-bind="click:$parent.moveUp.bind($parent)" href="javascript:;" title="上移">
+                                    <svg class="icon-svg arrow-top" aria-hidden="true">
+                                        <use xlink:href="#icon-arrow-top"></use>
+                                    </svg>
+                                </a>
+                                <a data-bind="click:$parent.moveDown.bind($parent)" href="javascript:;">
+                                    <svg class="icon-svg arrow-bottom" aria-hidden="true">
+                                        <use xlink:href="#icon-arrow-bottom"></use>
+                                    </svg>
+                                </a>
+                                <a data-bind="click:$parent.delItem.bind($parent)" href="javascript:;">
+                                    <svg class="icon-svg del-icon" aria-hidden="true">
+                                        <use xlink:href="#icon-shanchu"></use>
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         `
     }
 
-    // 创建模块元素，插入dom中
-    // 创建一个双向数据绑定 jquery.my.js
-    // 从外部传入 父级 对象
+    // 创建弹层
     create(shelf) {
-        let self = this;
-
-        // 父级模块 设置面板区
         this.shelf = shelf
-
         this.$container = $(`<div class="dss-modify-shelf"></div>`)
-            .html(self.html())
+            .html(this.getHtml())
             .appendTo($(document.body))
 
-        this.event()
+        // 创建一份原始数据的副本
+        let source = ko.mapping.toJS(this.shelf.data.items).slice(0)
+        // 每次打开弹层时取副本数据
+        this.items = ko.mapping.fromJS(source)
+
+        ko.applyBindings(this, this.$container[0])
     }
 
-    destroy() {
+    // 关闭弹层
+    close() {
         this.$container.remove()
     }
 
-    // 绑定事件
-    event() {
-        let self = this
+    // 确定按钮
+    save() {
+        let idx = tool.startLoading()
+        setTimeout(() => {
+            // 更新父模块的数据
+            this.shelf.data.items(this.items()) 
 
-        // 暂存的jq对象
-        let $selected = null;
-        let $input = this.$container.find('.js-ipt-text');
-        let $dropdown = this.$container.find('.js-dropdown');
-        let $listbox = this.$container.find('.js-listbox')
+            // 渲染view预览区 更新本地存储
+            this.shelf.renderViewHtml()
+            // 将数据和dom存储在本地
+            this.shelf.saveStore()
 
-
-        // 父模块中有数据，就渲染出来
-        let newData = ko.mapping.toJS(self.shelf.data)
-
-        let htmls = ''
-        if (newData.items.length) {
-            newData.items.forEach(obj => {
-                htmls += self.getItemHtml(obj)
-                self.tmp_items[obj.id] = obj
-                listenListbox()
-            })
-        } 
-        $listbox.html(htmls)
-
-
-        // 选择类型
-        $dropdown.on('click', function () {
-            $selected = $(this).find('.selected')
-            $(this).toggleClass('type-select-expand')
-            $(this).find('.drop').children().each(function () {
-                if ($(this).text() === $selected.text()) {
-                    $(this).addClass('cur').siblings().removeClass('cur')
-                }
-            })
-        }).find('.drop').on('click', '> li', function () {
-            let type = $(this).data('type')
-            let placeholder = '请输入sku'
-            $selected.text($(this).text())
-            self.data.selected = $(this).data('type')
-            switch (type) {
-                case 'sku':
-                    placeholder = '请输入sku'
-                    break;
-                case 'list':
-                    placeholder = '请输入特卖id'
-                    break;
-                case 'key':
-                    placeholder = '请输入关键字'
-                    break;
-                default:
-                    break;
-            }
-            $('.js-ipt-text').attr('placeholder', placeholder)
-        })
-
-        // 关闭
-        this.$container.find('.js-close').on('click', function () {
-            self.destroy()
-        })
-
-        // 确定
-        this.$container.find('#js-save').on('click', function () {
-            let idx = tool.startLoading('保存中，请稍后..')
-            // 生成 this.data.items 数据
-            self.data.items = []
-            $listbox.children().each(function () {
-                let id = $(this).attr('id')
-                self.data.items.push(self.tmp_items[id])
-            })
-
-            setTimeout(() => {
-                // 更新父模块的数据
-                self.shelf.data.items(self.data.items)
-
-                // 渲染view预览区 更新本地存储
-                self.shelf.renderViewHtml()
-                // 将数据和dom存储在本地
-                self.shelf.saveStore()
-                // 销毁弹层
-                self.destroy()
-
-                layer.close(idx)
-                swal("保存成功!", {
-                    button: false,
-                    icon: 'success',
-                    timer: 1000
-                });
-            }, 500);
-        })
-
-        // 添加
-        this.$container.on('click', '.js-add', function () {
-            let $this = $(this)
-            if (!$.trim($input.val())) {
-                $input.addClass('ipt-error')
-                return false
-            }
-            let idx = tool.startLoading()
-            setTimeout(() => {
-                renderItem({
-                    sku: '100010',
-                    title: '丽婴房新生儿保暖绑带内衣上衣',
-                    sp: 85,
-                    img: 'https://img06.miyabaobei.com/d1/p3/item/30/3000/3000054_topic_1.jpg@base@tag=imgScale&w=100&q=100',
-                    st: 100
-                })
-                layer.close(idx)
-                swal("已添加!", {
-                    button: false,
-                    icon: 'success',
-                    timer: 1000
-                });
-                listenListbox()
-            }, 500);
-        })
-
-        function listenListbox() {
-            if ($.isEmptyObject(self.tmp_items)) {
-                $listbox.addClass('status-isEmpty')
-            } else {
-                $listbox.removeClass('status-isEmpty')
-            }
-        }
-
-        // 监听输入框变化
-        $input.on('input propertychange', function () {
-            if ($.trim($(this).val())) {
-                $(this).removeClass('ipt-error')
-            }
-        })
-
-        // 上移
-        this.$container.on('click', '.js-action-up', function () {
-            let $item = $(this).closest('.item');
-            $item.moveTo('up')
-            return false
-        })
-
-        // 下移
-        this.$container.on('click', '.js-action-dn', function () {
-            let $item = $(this).closest('.item');
-            $item.moveTo('dn')
-            return false
-        })
-
-        // 删除
-        this.$container.on('click', '.js-action-del', function () {
-            let $item = $(this).parents('.item');
-            let id = $item.attr('id')
-            swal({
-                text: "确定要删除当前商品吗？",
-                icon: "warning",
-                dangerMode: true,
-                buttons: ['再想想', '删除']
-            })
-            .then(willDelete => {
-                if (willDelete) { // 删除
-                    $item.remove()
-                    delete self.tmp_items[id]
-                    listenListbox()
-                    swal("已删除!", {
-                        button: false,
-                        icon: 'success',
-                        timer: 1000
-                    });
-                }
-            });
-        })
-
-        // 编辑标题按钮
-        this.$container.on('click', '.js-modify-title', function () {
-            let $p = $(this).siblings('p')
-            let $input = $(this).siblings('input')
-            $(this).closest('li').toggleClass('status-edit')
-            $input.val($p.text())
-        })
-
-        // 标题 编辑 输入框
-        this.$container.on('blur keypress', '.status-edit .js-ipt-edit', function (e) {
-            let $input = $(this)
-            let id = $input.closest('ul').attr('id')
-            let $p = $input.siblings('p')
-            if (e.type == 'keypress') {
-                if (e.keyCode == '13') {
-                    save()
-                }
-            }
-            if (e.type == 'focusout') {
-                save()
-            }
-
-            function save() {
-                $p.text($input.val())
-                self.tmp_items[id].title = $input.val()
-                $input.closest('li').toggleClass('status-edit')
-            }
-        })
-
-        // 渲染商品
-        function renderItem(obj) {
-            obj.id = `item-${tool.guid()}`
-            let item_html = self.getItemHtml(obj)
-            self.$container.find('.js-listbox').append(item_html)
-            self.tmp_items[obj.id] = obj
-        }
-
+            this.close()
+            layer.close(idx)
+        }, 500);
     }
 
-    // 获取每条商品的html
-    getItemHtml(obj) {
-        if (typeof obj !== 'object') return false
-        return `
-            <ul class="item" id="${obj.id}">
-                <li>${ this.item_index++ }</li>
-                <li>${ obj.sku }</li>
-                <li class="cell-title">
-                    <p>${ obj.title }</p>
-                    <input placeholder="按回车键保存" class="ipt-title js-ipt-edit" type="text">
-                    <a href="javascript:;" class="edit-icon js-modify-title">
-                        <svg class="icon-svg" aria-hidden="true">
-                            <use xlink:href="#icon-bianji1"></use>
-                        </svg>
-                    </a>
-                </li>
-                <li>${ obj.sp }</li>
-                <li><img class="item-img" src="${ obj.img }" alt=""></li>
-                <li>${ obj.st }</li>
-                <li class="cell-actions">
-                    <a class="js-action-up" href="javascript:;" title="上移">
-                        <svg class="icon-svg arrow-top" aria-hidden="true">
-                            <use xlink:href="#icon-arrow-top"></use>
-                        </svg>
-                    </a>
-                    <a class="js-action-dn" href="javascript:;">
-                        <svg class="icon-svg arrow-bottom" aria-hidden="true">
-                            <use xlink:href="#icon-arrow-bottom"></use>
-                        </svg>
-                    </a>
-                    <a class="js-action-del" href="javascript:;">
-                        <svg class="icon-svg del-icon" aria-hidden="true">
-                            <use xlink:href="#icon-shanchu"></use>
-                        </svg>
-                    </a>
-                </li>
-            </ul>
-        `;
+    // 显示/隐藏 类型下拉框
+    toggleType() {
+        this.isSelectShow(!this.isSelectShow())
+    }
+
+    // 选择 下拉类型
+    choseType(item) {
+        this.selectedType(item)
+    }
+
+    // 添加商品
+    addItem() {
+        let idx = tool.startLoading('添加中，请稍后')
+        setTimeout(() => {
+
+            this.items.push(ko.mapping.fromJS({
+                index: this.indexCount(),
+                sku: '100010',
+                title: '丽婴房新生儿保暖绑带内衣上衣',
+                sp: 85,
+                img: 'https://img06.miyabaobei.com/d1/p3/item/30/3000/3000054_topic_1.jpg@base@tag=imgScale&w=100&q=100',
+                st: 100,
+                isEdit: false
+            }))
+            this.indexCount(this.indexCount() + 1)
+
+            layer.close(idx)
+        }, 0);
+    }
+
+    // 批量添加商品
+    addItems() {
+        console.log('批量添加');
+        return true 
+    }
+
+    // 批量添加触发上传控件
+    uploadFile(file) {
+        console.log(file);
+    }
+
+    // 删除商品
+    delItem(item, event) {
+        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let index = context.$index();
+
+        swal({
+            text: "确定要删除当前商品吗？",
+            icon: "warning",
+            dangerMode: true,
+            buttons: ['再想想', '删除']
+        })
+        .then(willDelete => {
+            if (willDelete) {
+                this.items.splice(index, 1)
+                swal("已删除!", {
+                    button: false,
+                    icon: 'success',
+                    timer: 1000
+                });
+            }
+        });
+    }
+
+    // 上移
+    moveUp(item, event) {
+        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let index = context.$index();
+        if (index !== 0) {
+            this.items(tool.swapItems(this.items(), index, index - 1))
+        } else {
+            layer.msg('已到顶部', {time: 1000})
+        }
+    }
+
+    // 下移
+    moveDown(item, event) {
+        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let index = context.$index();
+        if (index !== this.items().length - 1) {
+            this.items(tool.swapItems(this.items(), index, index + 1))
+        } else {
+            layer.msg('已到底部', {time: 1000})``
+        }
+    }
+    
+    // 编辑标题
+    toggleTitleInput(event) {
+        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let index = context.$index();
+
+        this.items().forEach((item, idx) => {
+            if (idx != index) {
+                item.isEdit(false)
+            }
+        })
+        this.items()[index].isEdit( !this.items()[index].isEdit() )
     }
 
 }

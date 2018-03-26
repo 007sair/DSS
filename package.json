@@ -38,7 +38,6 @@
   "dependencies": {
     "dragula": "^3.7.2",
     "jquery": "^2.2.4",
-    "knockout": "^3.5.0-beta",
     "spectrum-colorpicker": "^1.8.0",
     "store": "^2.0.12",
     "sweetalert": "^2.1.0"

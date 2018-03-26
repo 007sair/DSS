@@ -55,53 +55,47 @@
 
 <div class="dss-main">
 
-    <div class="dss-tab">
+    <div class="dss-tab" id="js-home-list">
         <ul class="title">
             <li>专题ID</li>
             <li>页面名称</li>
             <li>更新时间</li>
             <li class="state">
-                <span class="J_state">状态<i class="J_arrow arrow-down"></i></span><svg class="icon-svg J_iconask" aria-hidden="true"><use xlink:href="#icon-ask"></use></svg>
-                <div class="state-open">
+                <div class="J_state" data-bind="click: toggleState">
+                    <span data-bind="text: data.isStateSelected() || '状态'"></span><i data-bind="css: { 'cur': data.isStateShow() }" class="J_arrow arrow-down"></i>
+                </div>
+                <div class="ask">
+                    <svg class="icon-svg J_iconask" aria-hidden="true"><use xlink:href="#icon-ask"></use></svg>
+                    <div class="state-content"><i class="arrow-up"></i>状态包括已发布、审核通过、待审核、被驳回、已下线六种状态；点击▼可筛选专题状态</div>
+                </div>
+
+                <div class="state-open" style="display:none" data-bind="style: { display: data.isStateShow() ? '' : 'none' }">
                     <i class="arrow-up"></i>
-                    <div class="state-list">
-                        <span>已发布</span>
-                        <span class="cur">审核通过</span>
-                        <span>待审核</span>
-                        <span>被驳回</span>
-                        <span>已下线</span>
+                    <div class="state-list" data-bind="foreach: data.states">
+                        <span data-bind="text: $data, click: $parent.selectState.bind($parent), css: {'cur': $parent.data.isStateSelected() == $data}"></span>
                     </div>
                 </div>
-                <div class="state-content"><i class="arrow-up"></i>状态包括已发布、审核通过、待审核、被驳回、已下线六种状态；点击▼可筛选专题状态</div>
             </li>
             <li>操作</li>
             <li>驳回原因</li>
         </ul>
+        <!-- ko foreach: list -->  
         <ul>
-            <li>25031</li>
-            <li>306大促奶粉5折306大促奶粉5折306大促奶粉5折306大促奶粉5折</li>
-            <li>2018-2-28  11:11:22</li>
-            <li>已发布</li>
-            <li><a href="javascript:void(0);">编辑</a><a href="javascript:void(0);">预览</a><a href="javascript:void(0);">删除</a></li>
-            <li>------------</li>
+            <li data-bind="text: $data.sku"></li>
+            <li data-bind="text: $data.title"></li>
+            <li data-bind="text: $data.time"></li>
+            <li data-bind="text: $data.status"></li>
+            <li>
+                <a data-bind="click: $parent.edit.bind($parent)" href="javascript:void(0);">编辑</a>
+                <a data-bind="click: $parent.preview.bind($parent)" href="javascript:void(0);">预览</a>
+                <a data-bind="click: $parent.del.bind($parent)" href="javascript:void(0);">删除</a>
+            </li>
+            <li data-bind="text: $data.rr"></li>
         </ul>
-        <ul>
-            <li>25031</li>
-            <li>306大促奶粉5折</li>
-            <li>2018-2-28  11:11:22</li>
-            <li>已发布</li>
-            <li><a href="javascript:void(0);">预览</a><a href="javascript:void(0);">删除</a></li>
-            <li>------------</li>
-        </ul>
-        <ul>
-            <li>25031</li>
-            <li>306大促奶粉5折</li>
-            <li>2018-2-28  11:11:22</li>
-            <li>已发布</li>
-            <li><a href="javascript:void(0);">预览</a></li>
-            <li>商品提交错误如有疑问请联系招,文字商品提 交错误如有疑问请联系招</li>
-        </ul>
+        <!-- /ko -->  
     </div>
+
+    <div id="ko-pagination"></div>
 
 </div>
 
