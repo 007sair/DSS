@@ -6,7 +6,7 @@ import '@component/sidebar'
 import '@component/crumbs_tab'
 
 import Table from '@module/view/table'
-import Pagination from '@component/pagination'
+import Pagination from '@module/view/pagination'
 
 class Page {
 

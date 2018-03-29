@@ -21,6 +21,15 @@ export default {
             contentType: false,
             success: function (res) {
                 callback && callback(res)
+            },
+            error() {
+                let res = {}
+                layer.msg('上传错误，使用默认图', {time: 1500})
+                console.log('upload error');
+                res.url = 'http://via.placeholder.com/750x300'
+                callback && callback(res)
+            },
+            complete() {
                 layer.close(idx)
             }
         });
