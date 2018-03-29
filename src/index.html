@@ -9,57 +9,16 @@
 </head>
 <body>
 
-<div class="dss-menu">
-    <a href="/" class="logo fl"></a>
-    <div class="menu fr">
-        <div class="user">
-            <svg class="icon-svg" aria-hidden="true"><use xlink:href="#icon-user"></use></svg>
-            <span>北京花旺在线商贸有限公司</span>
-        </div>
-        <a href="#home" class="btn-home">
-            <svg class="icon-svg" aria-hidden="true"><use xlink:href="#icon-home"></use></svg>
-        </a>
-        <a href="#cancel" class="btn-cancel">
-            <svg class="icon-svg" aria-hidden="true"><use xlink:href="#icon-cancel"></use></svg>
-        </a>
-    </div>
+<div id="page">
+    <cp-menu></cp-menu>
+    <cp-sidebar></cp-sidebar>
+    <cp-crumbs></cp-crumbs>
+    <cp-modules></cp-modules>
 </div>
 
-<div class="dss-sidebar">
-    <a href="#page">
-        <svg class="icon-svg" aria-hidden="true"><use xlink:href="#icon-page"></use></svg>
-        <p>页面</p>
-    </a>
-    <a href="#page">
-        <svg class="icon-svg" aria-hidden="true"><use xlink:href="#icon-caogao"></use></svg>
-        <p>草稿</p>
-    </a>
-</div>
-
-<div class="dss-crumbs">
-    <div class="lt fl">
-        <span class="c-gray-l">位置：</span>
-        <div class="path">
-            <span>页面首页</span><span class="cur">306大促奶粉5折</span>
-        </div>
-        <button class="btn-globalsetting js-globalset">
-            <svg class="icon-svg" aria-hidden="true"><use xlink:href="#icon-setting"></use></svg>
-            全局设置
-        </button>
-
-    </div>
-
-    <div class="rt fr">
-        <button>预览</button>
-        <button id="js-save-page">保存</button>
-        <button>提交</button>
-    </div>
-</div>
-
-<div class="dss-modules" id="drag-modules"></div>
 
 <div class="dss-view">
-    <div class="view-box" id="drag-view"></div>
+    <div data-bind="css:{'view-box-draged':views().length}" class="view-box" id="drag-view"></div>
 </div>
 
 </body>

@@ -1,13 +1,13 @@
-import tool from '_instance/tool'
-import global_data from '_instance/data'
-import dom, { el_module, el_view } from "_instance/dom";
+import gd from '@instance/data'
+import tool from '@instance/tool'
+import _store from '@instance/store'
 
 class Hr {
 
     constructor() {
 
         // 当前模块的容器
-        this.$container = null
+        this.el = null
 
         // 模块名称，通常与此文件同名
         this.type = 'hr'
@@ -20,128 +20,116 @@ class Hr {
         // 悬浮操作区
         this.actions = ['setting', 'up', 'dn', 'delete']
 
-        // 当前模块存放的所有数据
         this.data = {
             text: '分隔栏',
             color: ''
         }
 
+        this.bind()
+        
     }
 
-    html() {
+    getHtml() {
         return `
             <div class="tit">
-                <i class="icon-close" data-bind="click:close"></i>${this.title}
+                <i class="icon-close" data-bind="click:destroy"></i>${this.title}
             </div>
             <div class="content">
                 <div class="dss-form-item">
                     <label class="form-label form-label-5 required">分隔栏文字</label>
                     <div class="form-box">
-                        <input type="text" data-bind="value:data.text,valueUpdate:'afterkeydown'" class="form-input" placeholder="填入名称">
+                        <input type="text" data-bind="value:bindData.text,valueUpdate:'afterkeydown'" class="form-input" placeholder="填入名称">
                     </div>
                 </div>
                 <div class="dss-form-item">
                     <label class="form-label form-label-5">分隔栏颜色</label>
                     <div class="form-box">
                         <div class="color-picker">
-                            <input id="_colorpicker_" data-bind="value: data.color" type="text" />
+                            <input id="_colorpicker_" data-bind="value: bindData.color" type="text" />
                         </div>
                     </div>
                 </div>
             </div>
             <div class="btns">
-                <button type="button" data-bind="click:save,disable:!data.text()" class="btn btn-primary">保存</button>
+                <button type="button" data-bind="click:save,disable:!bindData.text()" class="btn btn-primary">保存</button>
             </div>
         `
     }
 
-    // 创建模块元素，插入dom中
-    create() {
-        let self = this
-        let offset = dom.getOffset(dom.$action)
-        let id = dom.$activeView.attr('id')
+    bind() {
+        this.bindData = ko.mapping.fromJS(tool.jsonClone(this.data))
+    }
 
-        this.data = ko.mapping.toJS(this.data)
-        
-        this.$container = $(`
-            <div class="dss-dialog dss-dialog-${this.type}">${this.html()}</div>
-        `).css({
-            top: offset.top,
-            left: offset.left,
-        }).appendTo($(document.body))
-        
-        // 数据发生变更，需再次mapping
-        this.data = ko.mapping.fromJS(Object.assign({}, this.data, global_data.store.data[id]))
+    // 创建模块元素，插入dom中
+    create(offset) {
+        this.el = document.createElement('div')
+        this.el.className = `dss-dialog dss-dialog-${this.type}`
+        this.el.style.left = offset.left + 'px'
+        this.el.style.top = offset.top + 'px'
+        this.el.innerHTML = this.getHtml()
+
+        document.body.appendChild(this.el)
+
+        this.bind()
 
         // 设置色板
         this.setColor()
 
         // 双向绑定
-        ko.applyBindings(this, this.$container[0])
+        ko.applyBindings(this, this.el)
 
         // 必须返回，否则外部接收不到，无法删除
-        return this.$container
+        return this.el
     }
 
     setColor() {
         let self = this
-        let $colorPicker = this.$container.find('#_colorpicker_')
-        let colorPicker_config = Object.assign({}, global_data.colorPicker, {
-            color: self.data.color() || '#333',
+        let $colorPicker = $(this.el).find('#_colorpicker_')
+        let colorPicker_config = Object.assign({}, gd.colorPicker, {
+            color: self.bindData.color() || '#7f8797',
             change: function(color) {
-                self.data.color(color.toHexString())
+                self.bindData.color(color.toHexString())
             }
         })
         $colorPicker.spectrum(colorPicker_config).show()
 
         let curColor = $colorPicker.spectrum("get");
-        this.data.color(curColor.toHexString())
+        this.bindData.color(curColor.toHexString())
     }
 
     save() {
-        let self = this
-        let id = dom.$activeView.attr('id')
-
-        let idx = tool.startLoading()
-        setTimeout(() => {
-            self.destroy()
-            layer.msg('保存成功', { icon: 1, time: 1500 });
-            layer.close(idx)
-            global_data.store.data[id] = ko.mapping.toJS(this.data);
-            
-            // 渲染view预览区 更新本地存储
-            self.renderViewHtml()
-        }, 500);
+        this.data = ko.mapping.toJS(this.bindData)
+        this.html(this.getViewHtml())
+        this.destroy()
+        _store.set()
     }
 
     destroy() {
-        global_data.isSettingPanelShow = false
+        $(this.el).remove()
+        this.parent && this.parent.isShowPanel(false)
     }
 
-    // 拖拽后的临时占位图
-    // 调用时机：成功拖拽到view区时
-    getTempHtml() {
-        return `
-            <div class="temp-hr">
-                <i></i><span>分隔栏</span><i></i>
-            </div>
-        `
-    }
+    // 渲染view区
+    // 有数据就渲染带数据的 没有就渲染占位
+    getViewHtml() {
+        let isEmpty = () => {
+            return !this.data.text
+        }
+        let html = ''
 
-    // 将html保存到view区
-    // 调用时机：点击设置面板区的"保存"按钮
-    renderViewHtml($el = dom.$activeView) {
-        let obj = ko.mapping.toJS(this.data)
-        let html = `
-            <div class="temp-hr" style="color:${obj.color}">
-                <i></i><span>${obj.text}</span><i></i>
-            </div>
-        `
-        $el.html(html)
+        if (!isEmpty()) {
+            html = `
+                <div class="temp-hr" style="color:${ this.data.color }">
+                    <i></i><span>${ this.data.text }</span><i></i>
+                </div>`
+        } else {
+            html = `
+                <div class="temp-hr">
+                    <i></i><span>分隔栏</span><i></i>
+                </div>`
+        }
 
-        // 触发 store.set() 保存数据到本地
-        // 在这之前必须先处理好global_data.store的数据，否则无法保存
-        global_data.isDomUpdate = true
+        return html
     }
 
 }

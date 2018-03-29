@@ -1,5 +1,4 @@
-import global_data from '_instance/data'
-import tool from '_instance/tool'
+import tool from '@instance/tool'
 
 class CreatePage {
 

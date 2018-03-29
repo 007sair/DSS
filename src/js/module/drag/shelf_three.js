@@ -1,6 +1,3 @@
-import global_data from '_instance/data'
-import tool from '_instance/tool'
-import dom, { el_module, el_view } from "_instance/dom";
 import ShelfTwo from "./shelf_two";
 
 class shelfThree extends ShelfTwo {

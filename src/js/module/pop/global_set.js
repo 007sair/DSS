@@ -2,8 +2,8 @@
  * 全局设置
  */
 
-import global_data from '_instance/data'
-import tool from '_instance/tool'
+import gd from '@instance/data'
+import tool from '@instance/tool'
 
 class GlobalSetting {
 
@@ -104,7 +104,7 @@ class GlobalSetting {
     setColor() {
         let self = this
         let $colorPicker = this.$container.find('#_colorpicker_');
-        let colorPicker_config = Object.assign({}, global_data.colorPicker, {
+        let colorPicker_config = Object.assign({}, gd.colorPicker, {
             color: self.data.shelf_color() || '#333',
             change: function(color) {
                 self.data.shelf_color(color.toHexString())

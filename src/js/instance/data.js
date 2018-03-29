@@ -1,7 +1,7 @@
 
 /**
  * 一些全局数据，统一放在这里
- * 外部引用通过 global_data
+ * 外部引用通过 gd
  */
 
 export default {
@@ -11,15 +11,15 @@ export default {
         data: []
     },
 
+    preView: {
+        views: []
+    },
+
+    resData: [],
+
     // view区创建出来的所有数据，会被存到本地存储中
     store: {
-        // 一键生成导航的数据
-        nav: {
-            id: '',     // 导航的id view-xxxxxxxx
-            data: []    // 每个模块对应的导航数据
-        },
-        html: '',
-        data: {}
+        data: []
     },
 
 

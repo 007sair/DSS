@@ -7,8 +7,8 @@ class Pagination {
 
         this.el = 'ko-pagination'
 
-        this.pagerCount = this.config.pager || 5;    // 如果分页的页面太多，截取部分页面进行显示，默认设置显示6个页面
-        this.pageSize = this.config.size || 10;     // 每页显示的记录数
+        this.pagerCount = this.config.pager || 5; // 如果分页的页面太多，截取部分页面进行显示，默认设置显示6个页面
+        this.pageSize = this.config.size || 10;   // 每页显示的记录数
         this.currentPage = ko.observable(1);    // 当前页面Index
         this.jumpPage = ko.observable(1);       // 需要跳转的页面的Index
         this.pageCount = ko.observable(0);      // 总页数

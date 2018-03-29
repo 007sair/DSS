@@ -26,7 +26,7 @@ module.exports = {
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
-            ko: '_lib/ko',
+            ko: '@lib/ko',
             swal: 'sweetalert',
             layer: path.resolve(__dirname, "src/js/lib/layer"),
         }),

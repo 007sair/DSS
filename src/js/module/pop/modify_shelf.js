@@ -1,7 +1,8 @@
 /**
  * 编辑货架商品
  */
-import tool from '_instance/tool'
+import tool from '@instance/tool'
+import _store from '@instance/store'
 
 /**
  * 同时绑定enter与blur事件，回车和失焦使用一个函数
@@ -147,7 +148,7 @@ class ModifyShelf {
             .appendTo($(document.body))
 
         // 创建一份原始数据的副本
-        let source = ko.mapping.toJS(this.shelf.data.items).slice(0)
+        let source = ko.mapping.toJS(this.shelf.bindData.items).slice(0)
         // 每次打开弹层时取副本数据
         this.items = ko.mapping.fromJS(source)
 
@@ -164,15 +165,16 @@ class ModifyShelf {
         let idx = tool.startLoading()
         setTimeout(() => {
             // 更新父模块的数据
-            this.shelf.data.items(this.items()) 
+            this.shelf.bindData.items(this.items()) 
+            this.shelf.data = ko.mapping.toJS(this.shelf.bindData)
 
-            // 渲染view预览区 更新本地存储
-            this.shelf.renderViewHtml()
-            // 将数据和dom存储在本地
-            this.shelf.saveStore()
+            // 更新view区的html
+            this.shelf.html(this.shelf.getViewHtml())
 
             this.close()
             layer.close(idx)
+
+            _store.set()
         }, 500);
     }
 
@@ -219,9 +221,6 @@ class ModifyShelf {
 
     // 删除商品
     delItem(item, event) {
-        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
-        let index = context.$index();
-
         swal({
             text: "确定要删除当前商品吗？",
             icon: "warning",
@@ -230,7 +229,7 @@ class ModifyShelf {
         })
         .then(willDelete => {
             if (willDelete) {
-                this.items.splice(index, 1)
+                this.items.remove(item)
                 swal("已删除!", {
                     button: false,
                     icon: 'success',
@@ -242,29 +241,21 @@ class ModifyShelf {
 
     // 上移
     moveUp(item, event) {
-        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let context = ko.contextFor(event.target);
         let index = context.$index();
-        if (index !== 0) {
-            this.items(tool.swapItems(this.items(), index, index - 1))
-        } else {
-            layer.msg('已到顶部', {time: 1000})
-        }
+        tool.moveToUp(this.items, index)
     }
 
     // 下移
     moveDown(item, event) {
-        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let context = ko.contextFor(event.target);
         let index = context.$index();
-        if (index !== this.items().length - 1) {
-            this.items(tool.swapItems(this.items(), index, index + 1))
-        } else {
-            layer.msg('已到底部', {time: 1000})``
-        }
+        tool.moveToDown(this.items, index)
     }
     
     // 编辑标题
     toggleTitleInput(event) {
-        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
+        let context = ko.contextFor(event.target);
         let index = context.$index();
 
         this.items().forEach((item, idx) => {

@@ -214,6 +214,7 @@ html, body {
         margin-bottom: 15px;
         font-size: 14px;
         cursor: pointer;
+        user-select: none;
 
         &:before {
             @include arrow(top, 6px, #999);

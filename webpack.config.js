@@ -40,9 +40,10 @@ let config = {
     resolve: {
         extensions: ['.js', '.css', '.scss'],
         alias: {
-            '_module': path.resolve(__dirname, 'src/js/module'),
-            '_instance': path.resolve(__dirname, 'src/js/instance'),
-            '_lib': path.resolve(__dirname, 'src/js/lib'),
+            '@lib': path.resolve(__dirname, 'src/js/lib'),
+            '@module': path.resolve(__dirname, 'src/js/module'),
+            '@instance': path.resolve(__dirname, 'src/js/instance'),
+            '@component': path.resolve(__dirname, 'src/js/component'),
         },
     },
     module: {
@@ -59,7 +60,7 @@ let config = {
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
-            ko: '_lib/ko',
+            ko: '@lib/ko',
             swal: 'sweetalert',
             layer: path.resolve(__dirname, "src/js/lib/layer"),
         }),

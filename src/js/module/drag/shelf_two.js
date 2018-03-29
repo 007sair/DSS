@@ -1,13 +1,14 @@
-import global_data from '_instance/data'
-import tool from '_instance/tool'
-import dom, { el_module, el_view } from "_instance/dom";
+import tool from '@instance/tool'
+import _store from '@instance/store'
+import Mod from '@module'
+
 
 class ShelfTwo {
 
     constructor() {
 
         // 当前模块的容器
-        this.$container = null
+        this.el = null
 
         // 模块名称，通常与此文件同名
         this.type = 'shelf_two'
@@ -30,10 +31,12 @@ class ShelfTwo {
 
         // view区显示的最大个数
         this.showMax = 2;
+
+        this.bind()
         
     }
 
-    html() {
+    getHtml() {
         return `
             <div class="tit">
                 <i class="icon-close" data-bind="click: destroy"></i>${this.title}
@@ -42,122 +45,110 @@ class ShelfTwo {
                 <div class="dss-form-item">
                     <label class="form-label form-label-4 required">货架名称</label>
                     <div class="form-box">
-                        <input type="text" data-bind="value: data.shelf_title, valueUpdate:'afterkeydown'" class="form-input" placeholder="填入名称">
+                        <input type="text" data-bind="value: bindData.shelf_title, valueUpdate:'afterkeydown'" class="form-input" placeholder="填入名称">
                     </div>
                 </div>
                 <button data-bind="click: showModify" class="modify-shelf">编辑货架商品</button>
             </div>
             <div class="btns">
-                <button type="button" data-bind="click:save, disable: !data.shelf_title()" class="btn btn-primary">保存</button>
+                <button type="button" data-bind="click:save, disable: !bindData.shelf_title()" class="btn btn-primary">保存</button>
             </div>
         `
     }
 
     // 创建模块元素，插入dom中
-    // 创建一个双向数据绑定 jquery.my.js
-    create() {
-        let self = this
-        let id = dom.$activeView.attr('id')
-        let offset = dom.getOffset(dom.$action)
+    create(offset) {
+        this.el = document.createElement('div')
+        this.el.className = `dss-dialog dss-dialog-${this.type}`
+        this.el.style.left = offset.left + 'px'
+        this.el.style.top = offset.top + 'px'
+        this.el.innerHTML = this.getHtml()
 
-        this.data = ko.mapping.toJS(this.data)
+        document.body.appendChild(this.el)
 
-        this.$container = $(`
-            <div class="dss-dialog dss-dialog-${this.type}">${this.html()}</div>
-        `).css({
-            top: offset.top,
-            left: offset.left,
-        }).appendTo($(document.body))
-
-        // 从本地存储的global_data中获取到本条数据
-        this.data = ko.mapping.fromJS(Object.assign({}, this.data, global_data.store.data[id]))
+        this.bind()
 
         // 初始化状态为红色
-        this.data.isChildSaved(false)
+        this.bindData.isChildSaved(false)
 
         // 双向绑定
-        ko.applyBindings(this, this.$container[0])
+        ko.applyBindings(this, this.el)
 
-        return this.$container
+        return this.el
     }
+
+    bind() {
+        this.bindData = ko.mapping.fromJS(tool.jsonClone(this.data))
+    }
+
 
     // 显示编辑货架弹层
     showModify() {
-        let modify_shelf = dom.getModule('modify_shelf')
+        let modify_shelf = new Mod['modify_shelf']
         modify_shelf.create(this)
     }
 
     save() {
-        let self = this
         let idx = tool.startLoading()
         setTimeout(() => {
-            self.data.id(tool.guid())
-            self.destroy()
+            // 保存只保存货架名称
+            this.data.shelf_title = this.bindData.shelf_title()
+
+            this.destroy()
+
             layer.msg('保存成功', { icon: 1, time: 1500 });
             layer.close(idx)
 
-            // 渲染view预览区 更新本地存储
-            self.renderViewHtml()
-            // 将数据和dom存储在本地
-            self.saveStore()
+            _store.set()
+
         }, 500);
     }
 
-    saveStore() {
-        let id = dom.$activeView.attr('id')
-        global_data.store.data[id] = ko.mapping.toJS(this.data);
-
-        // 触发 store.set() 保存数据到本地
-        // 在这之前必须先处理好global_data.store的数据，否则无法保存
-        global_data.isDomUpdate = true
-    }
-
     destroy() {
-        global_data.isSettingPanelShow = false
+        $(this.el).remove()
+        this.parent && this.parent.isShowPanel(false)
     }
 
-    // 拖拽成功后的临时占位图
-    // 调用时机：成功拖拽到view区时
-    getTempHtml() {
-        let lis = ''
-        for (let i = 0; i < this.showMax; i++) {
-            lis += `<li></li>`
-        }
-        return `
-            <div class="temp-${this.type}">
-                <ul>${ lis }</ul>
-            </div>
-        `
-    }
-
-    // 将html保存到view区
-    // 调用时机：点击设置面板区的"保存"按钮
-    renderViewHtml($el = dom.$activeView) {
-        let obj = ko.mapping.toJS(this.data)
+    // 渲染view区
+    // 有数据就渲染带数据的 没有就渲染占位
+    getViewHtml() {
+        let obj = ko.mapping.toJS(this.bindData)
         let items = obj.items.slice(0)
         let html = ''
 
-        if (items.length) {
+        // 是否为空
+        let isEmpty = () => {
+            return !items.length
+        }
+
+        if (!isEmpty()) {
             items.length = items.length >= this.showMax ? this.showMax : items.length
             items.forEach(item => {
                 html += `
-                    <div class="defaultBlock">
-                        <div class="entranceMap">
-                            <img src="${item.img}">
-                        </div>
-                        <div class="rim">
-                            <div class="mainTitle">${item.title}</div>
-                            <div class="price">
-                                <div class="sp">${item.sp}</div>
+                        <div class="defaultBlock">
+                            <div class="entranceMap">
+                                <img src="${item.img}">
                             </div>
-                        </div>
-                    </div>
-                `
+                            <div class="rim">
+                                <div class="mainTitle">${item.title}</div>
+                                <div class="price">
+                                    <div class="sp">${item.sp}</div>
+                                </div>
+                            </div>
+                        </div>`
             })
         } else {
-            html = this.getTempHtml()
+            let lis = ''
+            for (let i = 0; i < this.showMax; i++) {
+                lis += `<li></li>`
+            }
+            html += `
+                <div class="temp-${this.type}">
+                    <ul>${ lis}</ul>
+                </div>`
         }
-        $el.html(html)
+
+        return html
     }
 
 }
