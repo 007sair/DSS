@@ -3,7 +3,6 @@
  */
 
 import dragula from 'dragula'
-import swal from 'sweetalert'
 
 import gd from '@instance/data'
 import tool from '@instance/tool'
@@ -59,22 +58,7 @@ $(function () {
 
     // 拖拽结束，此事件在drop之后触发
     drake.on('dragend', function (el) {
-        let id = tool.guid()
-        let type = $(el).data('type')
-        let oModule = new Mod[type]
-
-        // 存在这个模块
-        if (oModule) {
-            // 成功拖拽到view区
-            if (gd.isDragSuccess) {
-                // 删除当前被放置的模块，使用ko渲染
-                $(el).remove()
-            }
-        } else {
-            layer.msg('没有找到模块', { icon: 5, time: 1000 })
-            $(el).remove()
-        }
-
+        $(el).remove()
     })
 
     // 设置拖拽时的阴影

@@ -26,7 +26,6 @@ let config = [
         name: 'images',
         title: '图片类',
         child: [
-            new hr(),
             new topbanner()
         ]
     },
@@ -42,6 +41,7 @@ let config = [
         name: 'dividerNav',
         title: '分隔导航',
         child: [
+            new hr(),
             new nav(),
         ]
     },

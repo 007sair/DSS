@@ -16,7 +16,7 @@ class ShelfTwo {
         // 模块标题，出现在设置面板的title处
         this.title = '两列货架'
 
-        this.icon = 'images/m_banner.png'
+        this.icon = 'images/m_shelf_two.png'
 
         // 悬浮操作区
         this.actions = ['setting','up', 'dn', 'delete']

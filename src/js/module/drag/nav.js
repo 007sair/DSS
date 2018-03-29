@@ -14,7 +14,7 @@ class Nav {
         // 模块标题，出现在设置面板的title处
         this.title = '一键生成导航'
 
-        this.icon = 'images/m_banner.png'
+        this.icon = 'images/m_nav.png'
 
         // 悬浮操作区
         this.actions = ['delete']

@@ -6,35 +6,13 @@
 
 export default {
 
-    // 页面完整数据，会提给后端
-    wholeData: {
-        data: []
-    },
-
+    // 预览区数据
     preView: {
         views: []
     },
 
-    resData: [],
-
-    // view区创建出来的所有数据，会被存到本地存储中
-    store: {
-        data: []
-    },
-
-
-    // view区是否为空，默认为空
-    // 为空时显示占位字符"请拖动左侧模块至此区域"
-    isViewEmpty: true,
-
-    // view区dom元素是否更新：新增、上移、下移、删除
-    isDomUpdate: false,
-
     // 模块是否被成功拖拽到右侧view区，默认未被成功拖拽
     isDragSuccess: false,
-
-    // 是否显示设置面板区，默认不显示
-    isSettingPanelShow: false,
 
     // 色板配置
     colorPicker: {

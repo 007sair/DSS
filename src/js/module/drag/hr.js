@@ -15,7 +15,7 @@ class Hr {
         // 模块标题，出现在设置面板的title处
         this.title = '分隔栏'
 
-        this.icon = 'images/m_banner.png'
+        this.icon = 'images/m_hr.png'
 
         // 悬浮操作区
         this.actions = ['setting', 'up', 'dn', 'delete']

@@ -15,7 +15,7 @@ class shelfThree extends ShelfTwo {
         // 模块标题，出现在设置面板的title处
         this.title = '三列货架'
 
-        this.icon = 'images/m_banner.png'
+        this.icon = 'images/m_shelf_three.png'
 
         this.showMax = 3
     }
