@@ -39,7 +39,7 @@ class Nav {
             })
             html = `<ul>${lis}</ul>`
         } else {
-            html = '<div class="empty-nav">导航内没有数据，请添加模块</div>'
+            html = '<div class="empty-nav">导航内没有数据，请添加分隔栏模块</div>'
         }
         return html
     }

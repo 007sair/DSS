@@ -38,7 +38,7 @@ let config = [
         ]
     },
     {
-        name: 'dividerNav',
+        name: 'hr',
         title: '分隔导航',
         child: [
             new hr(),

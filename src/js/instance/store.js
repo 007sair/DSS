@@ -1,4 +1,3 @@
-
 import store from 'store'
 import gd from '@instance/data'
 
@@ -17,7 +16,7 @@ const _store = {
     },
 
     ko2obj() {
-        return ko.mapping.toJS(gd.preView.views, {
+        return ko.mapping.toJS(gd.$$preview.views, {
             include: ["data", 'type'],
             ignore: ['html', 'isActive']
         })

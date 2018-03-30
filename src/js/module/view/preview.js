@@ -3,6 +3,7 @@ import tool from '@instance/tool'
 import Mod from '@module'
 import Action from './action'
 import _store from '@instance/store'
+import gd from '@instance/data'
 
 class Preview {
 
@@ -51,40 +52,49 @@ class Preview {
 
     // 选中
     active(item, event, el) {
-        let context = ko.contextFor(event.target); //获取绑定元素的上下文;event.target绑定View Model的DOM元素
-        let index = context.$index()
-
-        // 当前选中的元素
-        this.$active = $(el)
-
         // 取消非目标数据的选中状态
         this.views().forEach((view, idx) => {
-            if (index !== idx) {
-                view.oAction && view.oAction.destroy()
+            if (item.vid() !== view.vid()) {
+                gd.$$action && gd.$$action.destroy()
                 view.isActive(false)
             }
         })
         item.isActive(!item.isActive())
 
         if (item.isActive()) {
-            item.oAction = new Action(item)
-            // 将当前模块挂载到子模块，子模块内部会调用当前模块
-            item.oAction.parent = this
-            // 创建子模块：悬浮操作区
-            item.oAction.create()
+            gd.$$activeMod = item
+            gd.$$activeMod.$active = $(el)
+            gd.$$action = new Action()
+            gd.$$action.create()
         } else {
-            item.oAction && item.oAction.destroy()
+            gd.$$action && gd.$$action.destroy()
         }
+        
     }
 
     // 拖拽成功后调用
     // 在对应位置添加数据，更新dom
-    add(el, type) {
-        let $prev = $(el).prev(), $next = $(el).next()
+    add(type, index) {
         let mod = new Mod[type]
 
         // 根据mod，创建一份自定义属性的模块数据
         let data = this.mergedata2ko(mod, {})
+
+        let oDropInfo = this.checkDropByData(data, index)
+
+        if (oDropInfo.isCanDrop) {
+            this.views.splice(index, 0, data)
+        } else {
+            layer.msg(`[${data.title}] ${oDropInfo.msg}`, { time: 1500 })
+        }
+
+    }
+
+    // 获取元素被插入的位置
+    where(el) {
+        let index = -1,
+            $prev = $(el).prev(), 
+            $next = $(el).next()
 
         // 根据拖拽元素的位置在数组的对应位置插入模块数据
         if ($prev.length) { // 中间或底部
@@ -92,13 +102,14 @@ class Preview {
             let idx = this.views().findIndex((view) => {
                 return view.vid() == id
             })
-            this.views.splice(idx + 1, 0, data)
+            index = idx + 1;
         } else { // 顶部
-            this.views.unshift(data)
+            index = 0
         }
 
-        // console.log(this.views());
+        return index
     }
+
 
     // 删除某个元素
     del(one) {
@@ -144,6 +155,116 @@ class Preview {
         }
         return Object.assign(mod, data, ko.mapping.fromJS(base))
     }
+
+    /**
+     * 检查模块是否可以被成功放入view区
+     * @param {object} data     传入当前要添加的数据
+     * @param {number} index    传入要判断的位置
+     * @return 
+     *   isCanDrop  默认true。false为不可放下
+     *   msg        不可放下时的提示信息
+     */
+    checkDropByData(data, index) {
+        let arr_views = this.views()
+        let prevData = arr_views[index-1]
+        let nextData = arr_views[index]
+        let prev_level = prevData ? prevData.level() : undefined
+        let next_level = nextData ? nextData.level() : undefined
+
+        let result = this.checkLevel(data.type, prev_level, next_level)
+
+        return {
+            isCanDrop: result.isCanDrop,
+            msg: result.msg
+        }
+    }
+
+
+    checkDropByEl(el) {
+        let type = $(el).data('type')
+        // 坑：获取level属性，不能用data() 貌似会缓存
+        let prev_level = $(el).prev().attr('data-level')
+        let next_level = $(el).next().attr('data-level')
+
+        let result = this.checkLevel(type, prev_level, next_level)
+
+        return {
+            isCanDrop: result.isCanDrop,
+            msg: result.msg
+        }
+
+    }
+
+    // 根据类型，获取当前元素或数据的放置信息
+    checkLevel(type, prev_level, next_level) {
+        let self = this
+        let isCanDrop = true
+        let msg = ''
+        
+        prev_level = prev_level || 0
+        next_level = next_level || 3
+
+        switch (type) {
+            case 'topbanner':
+                if (has('topbanner')) {
+                    isCanDrop = false
+                    msg = '模块已存在'
+                } else {
+                    if (prev_level) { // 不在顶部
+                        isCanDrop = false
+                        msg = '模块需在顶部'
+                    }
+                }
+                break;
+            case 'nav':
+                if (has('nav')) {
+                    isCanDrop = false
+                    msg = '模块已存在'
+                } else {
+                    if (has('topbanner')) {
+                        if (prev_level == 1 && next_level == 3) {
+                            isCanDrop = true
+                        } else {
+                            isCanDrop = false
+                            msg = '模块需在专题头图下方'
+                        }
+
+                    } else {
+                        if (prev_level) { // 不在顶部
+                            isCanDrop = false
+                            msg = '模块需在顶部'
+                        }
+                    }
+                }
+                break;
+    
+            default:
+                if (next_level && next_level < 3) {
+                    isCanDrop = false
+                    msg = next_level < 2 ? '模块需在专题头图下方' : '模块需在导航下方'
+                }
+                break;
+        }
+    
+        function has(type) {
+            let flag = false
+            self.views().forEach(view => {
+                if (view.type == type) {
+                    flag = true
+                }
+            })
+            return flag
+        }
+
+        // 第一个模块
+        if (!prev_level && !next_level) {
+            isCanDrop = true
+        }
+
+
+        return { isCanDrop, msg }
+    }
+    
 
 }
 

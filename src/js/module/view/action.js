@@ -1,16 +1,16 @@
 
 import tool from '@instance/tool'
 import Mod from '@module'
+import gd from '@instance/data'
 
 class Action {
 
-    constructor(mod) {
+    constructor() {
         // 当前悬浮操作区容器
         this.el = null
         // 当前父对象，为创建的模块 preview.js
-        this.parent = null
         // 子对象，一般为对应的设置面板
-        this.mod = mod
+        this.mod = gd.$$activeMod
         // 是否显示设置面板
         this.isShowPanel = ko.observable(false)
         // 悬浮操作区的按钮配置
@@ -40,8 +40,8 @@ class Action {
         this.el = document.createElement('div')
         this.el.className = 'dss-action'
         this.el.innerHTML = this.getHtml()
-        this.el.style.left = tool.getOffset(this.parent.$active).left + 'px'
-        this.el.style.top = tool.getOffset(this.parent.$active).top + 'px'
+        this.el.style.left = tool.getOffset(gd.$$activeMod.$active).left + 'px'
+        this.el.style.top = tool.getOffset(gd.$$activeMod.$active).top + 'px'
         document.body.appendChild(this.el)
 
         ko.applyBindings(this, this.el)
@@ -61,7 +61,7 @@ class Action {
     }
 
     fire(action) {
-        let arr = this.parent.views()
+        let arr = gd.$$preview.views()
         let idx = arr.findIndex(view => {
             return view.vid() == this.mod.vid()
         })
@@ -77,12 +77,12 @@ class Action {
                 if (idx == 0 || this.mod.level() > arr[idx - 1].level()) {
                     layer.msg('已到顶部，不可上移', {time: 1000 });
                 } else {
-                    tool.moveToUp(this.parent.views, idx)
+                    tool.moveToUp(gd.$$preview.views, idx)
                     this.create()
                 }
                 break;
             case 'dn':
-                tool.moveToDown(this.parent.views, idx)
+                tool.moveToDown(gd.$$preview.views, idx)
                 this.create()
                 break;
             default:
@@ -98,7 +98,6 @@ class Action {
         } else {
             let offset = tool.getOffset($(this.el))
             this.mod.create(offset)
-            this.mod.parent = this
             this.isShowPanel(true)
         }
     }
@@ -112,7 +111,7 @@ class Action {
             buttons: ['再想想', '删除']
         }).then(willDelete => {
             if (willDelete) {
-                this.parent.del(this.mod)
+                gd.$$preview.del(this.mod)
                 this.destroy()
                 swal("已删除!", {
                     button: false,

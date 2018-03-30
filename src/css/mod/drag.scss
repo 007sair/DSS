@@ -51,7 +51,7 @@
             margin-right: 0;
         }
 
-        &:hover {
+        &:hover, &.active {
             background-color: #edf6ff;
         }
     }

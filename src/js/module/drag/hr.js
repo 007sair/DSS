@@ -101,12 +101,13 @@ class Hr {
         this.data = ko.mapping.toJS(this.bindData)
         this.html(this.getViewHtml())
         this.destroy()
+        gd.$$preview.updataNav()
         _store.set()
     }
 
     destroy() {
         $(this.el).remove()
-        this.parent && this.parent.isShowPanel(false)
+        gd.$$action && gd.$$action.isShowPanel(false)
     }
 
     // 渲染view区

@@ -234,6 +234,23 @@ html, body {
     }
 
     // drag模块的样式见 drag.scss
+
+    .add {
+        -s-position: absolute 3px 3px _ _;
+        padding: 3px 12px;
+        white-space: nowrap;
+        border: 1px solid $color-theme;
+        border-radius: 5px;
+        background-color: #fff;
+        font-size: 14px;
+        color: $color-theme;
+        &:before {
+            content: '+';
+            font-size: 1.25em;
+            line-height: 1;
+            margin-right: 2px;
+        }
+    }
 }
 
 .dss-main {

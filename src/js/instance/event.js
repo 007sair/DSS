@@ -13,7 +13,7 @@ import Preview from '@module/view/preview'
 
 $(function () {
 
-    gd.preView = new Preview()
+    gd.$$preview = new Preview()
 
     let isViewSource = false; // 设置拖拽来源，默认不是view区
 
@@ -35,24 +35,17 @@ $(function () {
     drake.on('drag', function (el, source) {
         // 判断拖拽来源是不是view区
         isViewSource = source == el_view
-        gd.preView.resetActive()
+        gd.$$preview.resetActive()
     })
 
     // 松开拖拽 放下
     drake.on('drop', function (el, target, source, sibling) {
         // 判定modul区模块是否被成功拖拽到view区
         if (target == el_view) { // 成功拖拽
-            let { isCanDrop, msg } = checkDrop(el)
-            if (isCanDrop) {
-                let type = $(el).data('type')
-                gd.preView.add(el, type)
-                gd.isDragSuccess = true
-            } else {
-                $(el).remove()
-                layer.msg(`放置失败：${msg}`, { time: 1000 })
-            }
-        } else {
-            gd.isDragSuccess = false
+            let type = $(el).data('type')
+            // 找到对应位置，插入对应数据
+            let flag = gd.$$preview.where(el)
+            gd.$$preview.add(type, flag)
         }
     })
 
@@ -63,7 +56,7 @@ $(function () {
 
     // 设置拖拽时的阴影
     drake.on('shadow', function (el, container, source) {
-        let { isCanDrop, msg } = checkDrop(el)
+        let { isCanDrop, msg } = gd.$$preview.checkDropByEl(el)
         if (isCanDrop) {
             $(el).removeClass('error').html(`<span class="title">将模块放置在此</span>`)
         } else {
@@ -131,7 +124,7 @@ function checkDrop(el) {
 
     function has(type) {
         let flag = false
-        let arr = gd.preView.views()
+        let arr = gd.$$preview.views()
         arr.forEach(view => {
             if (view.type == type) {
                 flag = true
@@ -147,3 +140,4 @@ function checkDrop(el) {
 
     return { isCanDrop, msg }
 }
+

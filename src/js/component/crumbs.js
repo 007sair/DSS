@@ -10,8 +10,9 @@ ko.components.register('cp-crumbs', {
         }
 
         this.save = () => {
-            let result = ko.toJS(gd.preView.views)
-            console.log(result);
+            let result = ko.toJS(gd.$$preview.views)
+            // console.log(result);
+            console.log(gd.$$preview.views());
         }
     },
     

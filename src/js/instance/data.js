@@ -6,13 +6,14 @@
 
 export default {
 
-    // 预览区数据
-    preView: {
-        views: []
-    },
+    // 预览区实例
+    $$preview: null,
 
-    // 模块是否被成功拖拽到右侧view区，默认未被成功拖拽
-    isDragSuccess: false,
+    // 预览区被选中模块对象
+    $$activeMod: null,
+
+    // 悬浮操作区实例
+    $$action: null,
 
     // 色板配置
     colorPicker: {

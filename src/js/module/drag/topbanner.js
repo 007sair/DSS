@@ -1,5 +1,6 @@
 import tool from '@instance/tool'
 import _store from '@instance/store'
+import gd from '@instance/data'
 
 class TopBanner {
 
@@ -83,7 +84,7 @@ class TopBanner {
 
     destroy() {
         $(this.el).remove()
-        this.parent && this.parent.isShowPanel(false)
+        gd.$$action && gd.$$action.isShowPanel(false)
     }
 
     // 渲染view区
