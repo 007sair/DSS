@@ -2,6 +2,8 @@
 
 `dss`全称：`Drag Special System`（拖拽型专题系统）
 
+预览地址：[DEMO](http://007sair.github.io/demo/dss/index.html?v=v)
+
 ## 环境安装
 
 **1、安装[NodeJS](http://nodejs.cn/download/)**
