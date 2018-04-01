@@ -5,7 +5,7 @@ class CreatePage {
     constructor() {
 
         // 当前模块的容器
-        this.$container = null
+        this.el = null
 
         this.title = '新建页面'
 
@@ -32,7 +32,7 @@ class CreatePage {
     }
 
     // 当前模块的所有html
-    html() {
+    getHtml() {
         return `
             <div class="dss-mask"></div>
             <div class="dss-dialog">
@@ -63,16 +63,12 @@ class CreatePage {
 
     // 创建模块元素，插入dom中
     create() {
-        let self = this;
-        // 渲染dom
-        this.$container = $(`
-            <div class="dss-createpage">${this.html()}</div>
-        `).appendTo($(document.body))
-
-        // 双向绑定
-        ko.applyBindings(this, this.$container[0])
-
-        return this.$container
+        this.el = document.createElement('div')
+        this.el.className = 'dss-createpage'
+        this.el.innerHTML = this.getHtml()
+        document.body.appendChild(this.el)
+        
+        ko.applyBindings(this, this.el)
     }
 
     save() {
@@ -86,9 +82,7 @@ class CreatePage {
     }
 
     destroy() {
-        if (this.$container) {
-            this.$container.remove()
-        }
+        document.body.removeChild(this.el)
     }
 
 }

@@ -99,7 +99,7 @@ class Hr {
 
     save() {
         this.data = ko.mapping.toJS(this.bindData)
-        this.html(this.getViewHtml())
+        this._html(this.getViewHtml())
         this.destroy()
         gd.$$preview.updataNav()
         _store.set()

@@ -71,7 +71,7 @@ class TopBanner {
     }
 
     save() {
-        this.html(this.getViewHtml())
+        this._html(this.getViewHtml())
         this.destroy()
         _store.set()
     }

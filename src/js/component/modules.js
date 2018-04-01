@@ -48,7 +48,7 @@ ko.components.register('cp-modules', {
 
     template: `
         <div class="dss-modules" id="drag-modules">
-            <button data-bind="visible:isSelectedFlag,click:addModule" class="add">添加</button>
+            <button data-bind="visible:isSelectedFlag,click:addModule" class="add">添加至末尾</button>
             <!-- ko foreach: { data: arr, as: 'mods' } -->
             <h2 data-bind="text:mods.title,click:$parent.toggle,css:{collapse:mods.isExpand}"></h2>
             <div class="drag-module" data-bind="visible:mods.isExpand">

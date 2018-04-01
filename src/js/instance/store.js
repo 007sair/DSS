@@ -7,18 +7,20 @@ const STORE_VIEW = '_drag_view_'
 const _store = {
 
     set() {
+        let obj = this.format(gd.$$preview.views)
+        store.set(STORE_VIEW, JSON.stringify(obj))
         console.log('fire store');
-        store.set(STORE_VIEW, JSON.stringify(this.ko2obj()))
     },
 
     get() {
         return store.get(STORE_VIEW)
     },
 
-    ko2obj() {
-        return ko.mapping.toJS(gd.$$preview.views, {
+    // 格式化需要的字段
+    format(_ko) {
+        return ko.mapping.toJS(_ko, {
             include: ["data", 'type'],
-            ignore: ['html', 'isActive']
+            ignore: ['_html', 'isActive']
         })
     },
 }

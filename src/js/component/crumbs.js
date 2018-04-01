@@ -1,5 +1,6 @@
 import gd from '@instance/data'
 import Mod from '@module'
+import _store from '@instance/store'
 
 ko.components.register('cp-crumbs', {
 
@@ -10,9 +11,8 @@ ko.components.register('cp-crumbs', {
         }
 
         this.save = () => {
-            let result = ko.toJS(gd.$$preview.views)
-            // console.log(result);
-            console.log(gd.$$preview.views());
+            let result = _store.format(gd.$$preview.views)
+            console.log(result);
         }
     },
     

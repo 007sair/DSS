@@ -39,7 +39,7 @@ class ModifyShelf {
 
     constructor() {
 
-        this.$container = null
+        this.el = null
 
         this.title = '编辑货架商品'
 
@@ -143,21 +143,23 @@ class ModifyShelf {
     // 创建弹层
     create(shelf) {
         this.shelf = shelf
-        this.$container = $(`<div class="dss-modify-shelf"></div>`)
-            .html(this.getHtml())
-            .appendTo($(document.body))
+
+        this.el = document.createElement('div')
+        this.el.className = 'dss-modify-shelf'
+        this.el.innerHTML = this.getHtml()
+        document.body.appendChild(this.el)
 
         // 创建一份原始数据的副本
         let source = ko.mapping.toJS(this.shelf.bindData.items).slice(0)
         // 每次打开弹层时取副本数据
         this.items = ko.mapping.fromJS(source)
 
-        ko.applyBindings(this, this.$container[0])
+        ko.applyBindings(this, this.el)
     }
 
     // 关闭弹层
     close() {
-        this.$container.remove()
+        $(this.el).remove()
     }
 
     // 确定按钮
@@ -169,7 +171,7 @@ class ModifyShelf {
             this.shelf.data = ko.mapping.toJS(this.shelf.bindData)
 
             // 更新view区的html
-            this.shelf.html(this.shelf.getViewHtml())
+            this.shelf._html(this.shelf.getViewHtml())
 
             this.close()
             layer.close(idx)

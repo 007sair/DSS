@@ -36,65 +36,81 @@
     }
 }
 
-// 左侧拖拽模块
-.drag-module {
-    margin-bottom: 25px;
-    > div {
-        @extend %mirror;
-
-        display: inline-block;
-        vertical-align: top;
-        margin-right: 45px;
-        cursor: move;
-
-        &:nth-child(even) {
-            margin-right: 0;
-        }
-
-        &:hover, &.active {
-            background-color: #edf6ff;
-        }
-    }
-}
-
-// 拖拽时的镜像
+/*------ common ------*/
 .gu-mirror {
-    @extend %mirror;
-    @include opacity(0.8, true);
-
     position: fixed !important;
     margin: 0 !important;
     z-index: 9999 !important;
-
-    text-align: center;
-    background-color: $dragBgColor;
+    opacity: 0.8;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+    filter: alpha(opacity=80);
 }
 
 .gu-hide {
-    display: none !important
+    display: none !important;
 }
 
-// body
 .gu-unselectable {
     -webkit-user-select: none !important;
     -moz-user-select: none !important;
     -ms-user-select: none !important;
-    user-select: none !important
+    user-select: none !important;
 }
 
-// 拖拽到view区的占位元素
 .gu-transit {
-    position: relative;
-    min-height: $dragHeight;
-    line-height: $dragHeight;
-    font-size: 14px;
-    text-align: center;
-    color: #fff;
-    z-index: 2;
+    @include opacity(0.6, true);
+}
 
-    @include texture($color: $color-blue);
 
-    &.error {
-        @include texture($color: #f00)
+/*------ 自定义 拖拽模块与放下的样式 ------*/
+.dss-modules {
+    // 左侧拖拽模块
+    .drag-module {
+        margin-bottom: 25px;
+        > div {
+            @extend %mirror;
+
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 45px;
+            cursor: move;
+
+            &:nth-child(even) {
+                margin-right: 0;
+            }
+
+            &:hover, &.active {
+                background-color: #edf6ff;
+            }
+        }
+    }
+
+    // 拖拽时的镜像
+    .gu-mirror {
+        @extend %mirror;
+        @include opacity(0.8, true);
+        position: fixed !important;
+        margin: 0 !important;
+        z-index: 9999 !important;
+        text-align: center;
+        background-color: $dragBgColor;
+    }
+}
+
+.dss-view {
+    // 拖拽到view区的占位元素
+    .gu-transit {
+        @include opacity(1, true);
+        position: relative;
+        min-height: $dragHeight;
+        line-height: $dragHeight;
+        font-size: 14px;
+        text-align: center;
+        color: #fff;
+        z-index: 2;
+        @include texture($color: $color-blue);
+        &.error {
+            @include texture($color: #f00)
+        }
     }
 }

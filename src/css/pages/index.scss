@@ -339,3 +339,44 @@ html, body {
         vertical-align: top;
     }
 }
+
+.dss-toc {
+    position: fixed;
+    top: $menuHeight + $crumbsHeight + 15px;
+    right: 15px;
+    background-color: #fff;
+    > button {
+        border: 1px solid #999;
+        font-size: 1.5em;
+        color: #999;
+        &:hover, &.active {
+            border-color: #333;
+            color: #333;
+        }
+    }
+}
+
+.dss-toclist {
+    position: fixed;
+    bottom: 50px;
+    transform: translateX(-100%);
+    width: 180px;
+    overflow-y: auto;
+    .box {
+        background-color: #fff;
+        // box-shadow: 3px 3px 5px #ccc;
+    }
+    .item {
+        margin: 0 0 1px 0;
+        padding: 7px 12px;
+        background-color: #c7f1d2;
+        cursor: move;
+        &:hover {
+            background-color: darken($color: #c7f1d2, $amount: 10%);
+        }
+        &.disabled {
+            cursor: not-allowed;
+            background-color: #ddd;
+        }
+    }
+}

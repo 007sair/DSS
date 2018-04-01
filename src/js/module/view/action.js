@@ -5,12 +5,12 @@ import gd from '@instance/data'
 
 class Action {
 
-    constructor() {
+    constructor(mod) {
         // 当前悬浮操作区容器
         this.el = null
         // 当前父对象，为创建的模块 preview.js
         // 子对象，一般为对应的设置面板
-        this.mod = gd.$$activeMod
+        this.mod = mod
         // 是否显示设置面板
         this.isShowPanel = ko.observable(false)
         // 悬浮操作区的按钮配置
@@ -40,8 +40,8 @@ class Action {
         this.el = document.createElement('div')
         this.el.className = 'dss-action'
         this.el.innerHTML = this.getHtml()
-        this.el.style.left = tool.getOffset(gd.$$activeMod.$active).left + 'px'
-        this.el.style.top = tool.getOffset(gd.$$activeMod.$active).top + 'px'
+        this.el.style.left = tool.getOffset(this.mod.$active).left + 'px'
+        this.el.style.top = tool.getOffset(this.mod.$active).top + 'px'
         document.body.appendChild(this.el)
 
         ko.applyBindings(this, this.el)
@@ -99,6 +99,8 @@ class Action {
             let offset = tool.getOffset($(this.el))
             this.mod.create(offset)
             this.isShowPanel(true)
+
+            gd.$$toc.isShowList(false)
         }
     }
 

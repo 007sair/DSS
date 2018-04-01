@@ -9,11 +9,10 @@ export default {
     // 预览区实例
     $$preview: null,
 
-    // 预览区被选中模块对象
-    $$activeMod: null,
-
     // 悬浮操作区实例
     $$action: null,
+
+    $$toc: null,
 
     // 色板配置
     colorPicker: {
