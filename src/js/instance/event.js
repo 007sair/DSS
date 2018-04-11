@@ -93,6 +93,9 @@ $(function () {
 
             gd.$$preview.views.splice(next_index, 0, data)
 
+            // 拖拽成功后删除对应的action 防止action位置错乱
+            gd.$$action.destroy()
+
             // 移除拖拽元素，元素实际与数据绑定好
             // 只需操作数据
             $(el).remove()

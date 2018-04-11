@@ -12,6 +12,7 @@ export default {
     // 悬浮操作区实例
     $$action: null,
 
+    // 悬浮目录vm
     $$toc: null,
 
     // 色板配置

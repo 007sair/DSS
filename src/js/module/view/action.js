@@ -100,7 +100,7 @@ class Action {
             this.mod.create(offset)
             this.isShowPanel(true)
 
-            gd.$$toc.isShowList(false)
+            gd.$$toc.isShowToc(false)
         }
     }
 
